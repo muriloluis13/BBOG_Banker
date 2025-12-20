@@ -150,7 +150,7 @@
     <div class="flex">
       <div>
         <h1>Modelo Financeiro | Campo de Gás Onshore</h1>
-        <div class="muted">Modelo real (sem inflação). FCFE descontado a Ke. Ano inicial: 2026. Reservas totais: <span id="reserves_display">992,12</span> milhões m³.</div>
+        <div class="muted">Modelo nominal (com inflação). FCFE descontado a Ke. Ano inicial: 2026. Reservas totais: <span id="reserves_display">992,12</span> milhões m³.</div>
       </div>
       <button class="btn" id="resetBtn" type="button">Resetar padrões</button>
     </div>
@@ -192,7 +192,7 @@
               <div class="val"><span id="c1_ebitda_margin">—</span></div>
             </div>
             <div class="kpi kpi-lor-stone" data-kpi-order="7">
-              <div class="cap">TIR (a.a., real)</div>
+              <div class="cap">TIR (a.a., nominal)</div>
               <div class="val"><span id="c1_irr">—</span></div>
             </div>
           </div>
@@ -238,8 +238,11 @@
           </div>
 
           <div class="row">
-            <label><span>Brent (US$/bbl)</span><span>US$ <span id="c1_brent_lbl">66.90</span></span></label>
-            <input type="range" id="c1_brent" min="50" max="95" step="0.1" value="62.0">
+            <label><span>Modelo</span><span><span id="c1_model_lbl">Nominal</span></span></label>
+            <select id="c1_model" style="width:100%; padding:8px; border:1px solid var(--bd); border-radius:8px; font-size:13px;">
+              <option value="nominal" selected>Nominal</option>
+              <option value="real">Real</option>
+            </select>
           </div>
 
           <div class="row">
@@ -249,6 +252,22 @@
               <option value="renegociado">Renegociado (R$ 1,90/m³)</option>
               <option value="brent">% Brent</option>
             </select>
+          </div>
+
+          <div class="row">
+            <label><span>Cenário de Brent</span><span><span id="c1_brent_scenario_lbl">Curva forward</span></span></label>
+            <select id="c1_brent_scenario" style="width:100%; padding:8px; border:1px solid var(--bd); border-radius:8px; font-size:13px;">
+              <option value="forward" selected>Curva forward</option>
+              <option value="bloomberg">Média Bloomberg</option>
+              <option value="custom">Customizado</option>
+            </select>
+          </div>
+
+          <div id="c1_brent_custom_box" style="display:none;">
+          <div class="row">
+            <label><span>Brent (US$/bbl)</span><span>US$ <span id="c1_brent_lbl">66.90</span></span></label>
+            <input type="range" id="c1_brent" min="50" max="95" step="0.1" value="62.0">
+          </div>
           </div>
 
           <div id="c1_brent_price_box" style="display:none;">
@@ -283,7 +302,7 @@
 
         <section class="card scenario-table">
           <div class="flex">
-            <h3 style="margin:0;font-size:14px;">Fluxo de Caixa (R$ milhões, reais)</h3>
+            <h3 style="margin:0;font-size:14px;">Fluxo de Caixa (R$ milhões, nominais)</h3>
             <div class="small">Ano parcial proporcional; desconto por fração.</div>
           </div>
           <div style="overflow:auto; margin-top:8px;">
@@ -300,7 +319,7 @@
           </div>
         </section>
       </div>
-      <div class="note">Notas: (i) preços em US$/MMBtu derivados do Brent (%); (ii) royalties 5,5% da receita; (iii) impostos 34% sobre EBT; (iv) NPV em R$ milhões; (v) produção limitada a <span id="c1_reserves_note">470,00</span> MMm³; (vi) COGS fixo de R$ 2.455.269,69/ano, proporcional à fração do ano; (vii) SG&A fixo de R$ 2.294.145,08/ano, proporcional à fração do ano; (viii) Leasing de R$ 3,6 milhões/ano (despesa financeira), proporcional à fração do ano; (ix) Maintenance CapEx de 0,5% da receita; (x) EBITDA = Receita - Royalties - COGS - SG&A; (xi) EBT = EBITDA - Leasing; (xii) corte econômico: produção finaliza se lucro líquido mensal < R$ 100 mil.</div>
+      <div class="note">Notas: (i) preços em US$/MMBtu derivados do Brent (%); (ii) receita bruta = volume × preço / (1 - 9,25% gross-up PIS/COFINS); (iii) receita líquida = receita bruta - tributos sobre faturamento (10,65% em lucro presumido ou 16,25% em lucro real, conforme receita bruta do ano anterior > R$ 78 milhões); (iv) royalties 5,5% da receita bruta; (v) tributos sobre lucro: lucro real = 34% sobre EBT; lucro presumido = 3,08% da receita bruta (IRPJ: 2% + CSLL: 1,08%); (vi) NPV em R$ milhões; (vii) produção limitada a <span id="c1_reserves_note">470,00</span> MMm³; (viii) COGS base de R$ 2.463.662,60/ano, atualizado anualmente em janeiro, proporcional à fração do ano; (ix) SG&A base de R$ 2.301.987,22/ano, atualizado anualmente em janeiro, proporcional à fração do ano; (x) Preço base de R$ 2,3608/m³, atualizado anualmente em junho; (xi) Leasing de R$ 3,6 milhões/ano (despesa financeira), proporcional à fração do ano; (xii) Maintenance CapEx de 0,5% da receita bruta; (xiii) EBITDA = Receita líquida - Royalties - COGS - SG&A; (xiv) EBT = EBITDA - Leasing; (xv) corte econômico: produção finaliza se lucro líquido mensal < R$ 500 mil (base 2026), ajustado pela inflação anualmente em janeiro.</div>
     </div>
 
     <!-- Cenário 2 -->
@@ -384,8 +403,11 @@
           </div>
 
           <div class="row">
-            <label><span>Brent (US$/bbl)</span><span>US$ <span id="c2_brent_lbl">66.90</span></span></label>
-            <input type="range" id="c2_brent" min="40" max="100" step="0.1" value="62.0">
+            <label><span>Modelo</span><span><span id="c2_model_lbl">Nominal</span></span></label>
+            <select id="c2_model" style="width:100%; padding:8px; border:1px solid var(--bd); border-radius:8px; font-size:13px;">
+              <option value="nominal" selected>Nominal</option>
+              <option value="real">Real</option>
+            </select>
           </div>
 
           <div class="row">
@@ -395,6 +417,22 @@
               <option value="renegociado">Renegociado (R$ 1,90/m³)</option>
               <option value="brent">% Brent</option>
             </select>
+          </div>
+
+          <div class="row">
+            <label><span>Cenário de Brent</span><span><span id="c2_brent_scenario_lbl">Curva forward</span></span></label>
+            <select id="c2_brent_scenario" style="width:100%; padding:8px; border:1px solid var(--bd); border-radius:8px; font-size:13px;">
+              <option value="forward" selected>Curva forward</option>
+              <option value="bloomberg">Média Bloomberg</option>
+              <option value="custom">Customizado</option>
+            </select>
+          </div>
+
+          <div id="c2_brent_custom_box" style="display:none;">
+          <div class="row">
+            <label><span>Brent (US$/bbl)</span><span>US$ <span id="c2_brent_lbl">66.90</span></span></label>
+            <input type="range" id="c2_brent" min="40" max="100" step="0.1" value="62.0">
+          </div>
           </div>
 
           <div id="c2_brent_price_box" style="display:none;">
@@ -458,7 +496,7 @@
 
         <section class="card scenario-table">
           <div class="flex">
-            <h3 style="margin:0;font-size:14px;">Fluxo de Caixa (R$ milhões, reais)</h3>
+            <h3 style="margin:0;font-size:14px;">Fluxo de Caixa (R$ milhões, nominais)</h3>
             <div class="small">Resumo anual equivalente; fração ajusta último ano.</div>
           </div>
           <div style="overflow:auto; margin-top:8px;">
@@ -475,7 +513,7 @@
           </div>
         </section>
       </div>
-      <div class="note">Notas: (i) preços em US$/MMBtu derivados do Brent (%); (ii) royalties 5,5% da receita; (iii) impostos 34% sobre EBT; (iv) depreciação linear 10 anos; (v) NPV em R$ milhões; (vi) produção limitada a <span id="c2_reserves_note">470,00</span> MMm³; (vii) COGS fixo de R$ 2.455.269,69/ano, proporcional ao mês; (viii) SG&A fixo de R$ 2.294.145,08/ano, proporcional ao mês; (ix) Leasing de R$ 3,6 milhões/ano (despesa financeira), proporcional ao mês; (x) Maintenance CapEx de 0,5% da receita; (xi) EBITDA = Receita - Royalties - COGS - SG&A; (xii) EBT = EBITDA - Depreciação - Leasing; (xiii) corte econômico: produção finaliza se lucro líquido < R$ 100 mil/mês.</div>
+      <div class="note">Notas: (i) preços em US$/MMBtu derivados do Brent (%); (ii) receita bruta = volume × preço / (1 - 9,25% gross-up PIS/COFINS); (iii) receita líquida = receita bruta - tributos sobre faturamento (10,65% em lucro presumido ou 16,25% em lucro real, conforme receita bruta do ano anterior > R$ 78 milhões); (iv) royalties 5,5% da receita bruta; (v) tributos sobre lucro: lucro real = 34% sobre EBT; lucro presumido = 3,08% da receita bruta (IRPJ: 2% + CSLL: 1,08%); (vi) depreciação linear 10 anos; (vii) NPV em R$ milhões; (viii) produção limitada a <span id="c2_reserves_note">470,00</span> MMm³; (ix) COGS base de R$ 2.463.662,60/ano, atualizado anualmente em janeiro, proporcional ao mês; (x) SG&A base de R$ 2.301.987,22/ano, atualizado anualmente em janeiro, proporcional ao mês; (xi) Preço base de R$ 2,3608/m³, atualizado anualmente em junho; (xii) Leasing de R$ 3,6 milhões/ano (despesa financeira), proporcional ao mês; (xiii) Maintenance CapEx de 0,5% da receita bruta; (xiv) EBITDA = Receita líquida - Royalties - COGS - SG&A; (xv) EBT = EBITDA - Depreciação - Leasing; (xvi) corte econômico: produção finaliza se lucro líquido < R$ 500 mil/mês (base 2026), ajustado pela inflação anualmente em janeiro.</div>
     </div>
   </div>
 
@@ -506,12 +544,388 @@
 
   <script>
     // ---------- Constantes ----------
-    var USD_BRL = 5.5, M3_PER_MMBTU = 26.8081, ROYALTY_RATE = 0.055, TAX_RATE = 0.34, START_YEAR = 2026, DAYS_PER_MONTH = 365/12;
-    var COGS_ANUAL = 2455269.69; // R$ 2.455.269,69/ano
-    var SGA_ANUAL = 2294145.08; // R$ 2.294.145,08/ano
+    var USD_BRL = 5.5, M3_PER_MMBTU = 26.8081, ROYALTY_RATE = 0.055, TAX_RATE = 0.34, START_YEAR = 2026;
+    
+    // Anos bissextos (fevereiro com 29 dias, ano com 366 dias)
+    var LEAP_YEARS = [2028, 2032, 2036, 2040, 2044, 2048, 2052, 2056, 2060];
+    
+    // Função para verificar se um ano é bissexto
+    function isLeapYear(year) {
+      return LEAP_YEARS.indexOf(year) !== -1;
+    }
+    
+    // Função para obter o número de dias em um mês (1-12)
+    function getDaysInMonth(month, year) {
+      // month: 1 = Janeiro, 2 = Fevereiro, ..., 12 = Dezembro
+      var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+      var days = daysInMonth[month - 1];
+      
+      // Se for fevereiro (mês 2) e o ano for bissexto, retornar 29 dias
+      if(month === 2 && year && isLeapYear(year)) {
+        days = 29;
+      }
+      
+      return days;
+    }
+    
+    // Função para obter o número total de dias no ano
+    function getDaysInYear(year) {
+      return isLeapYear(year) ? 366 : 365;
+    }
+    var COGS_ANUAL_BASE = 2463662.60234372; // R$ 2.463.662,60234372/ano (base)
+    var SGA_ANUAL_BASE = 2301987.21909101; // R$ 2.301.987,21909101/ano (base)
     var LEASING_ANUAL = 3600000; // R$ 3,6 milhões/ano
     var MAINTENANCE_CAPEX_RATE = 0.005; // 0,5% da receita
-    var MIN_PROFIT_THRESHOLD = 100000; // R$ 100 mil (corte econômico)
+    var MIN_PROFIT_THRESHOLD_BASE = 500000; // R$ 500 mil (corte econômico base, ano 2026)
+    
+    // Função para calcular valor do corte econômico ajustado pela inflação
+    // isRealModel: se true, retorna MIN_PROFIT_THRESHOLD_BASE sem inflação
+    function getMinProfitThreshold(year, month, isRealModel) {
+      // Usar a mesma inflação do COGS/SG&A (atualização em janeiro)
+      var factor = getCogsSgaInflationFactor(year, month, isRealModel);
+      return MIN_PROFIT_THRESHOLD_BASE * factor;
+    }
+    
+    // Constantes para cálculo de receita
+    var GROSS_UP_PIS_COFINS = 0.0925; // 9,25% de gross-up (PIS/COFINS)
+    var TAX_RATE_PRESUMIDO = 0.1065; // 10,65% - Tributos sobre faturamento (lucro presumido)
+    var TAX_RATE_REAL = 0.1625; // 16,25% - Tributos sobre faturamento (lucro real)
+    var REVENUE_THRESHOLD_FOR_REAL = 78000000; // R$ 78.000.000 - Limite para lucro real
+    
+    // Constantes para tributos sobre lucro (lucro presumido)
+    var PRESUMIDO_EBT_RATE_IRPJ = 0.08; // 8,0% da receita bruta para IRPJ
+    var PRESUMIDO_IRPJ_RATE = 0.25; // 25% de alíquota de IRPJ
+    var PRESUMIDO_EBT_RATE_CSLL = 0.12; // 12,0% da receita bruta para CSLL
+    var PRESUMIDO_CSLL_RATE = 0.09; // 9,0% de alíquota de CSLL
+    
+    // Função para calcular receita bruta (com gross-up)
+    function calculateGrossRevenue(volumeM3, pricePerM3) {
+      // Receita bruta = (Volume × Preço) / (1 - gross-up)
+      // O gross-up de 9,25% é aplicado dividindo por (1 - 0,0925) = 0,9075
+      var revenueWithoutGrossUp = volumeM3 * pricePerM3;
+      return revenueWithoutGrossUp / (1 - GROSS_UP_PIS_COFINS);
+    }
+    
+    // Função para determinar regime tributário baseado na receita bruta do ano anterior
+    function determineTaxRegime(previousYearGrossRevenue) {
+      // Se não há receita do ano anterior (primeiro ano), usar lucro presumido como padrão
+      if(!previousYearGrossRevenue || previousYearGrossRevenue === 0) {
+        return false; // false = lucro presumido
+      }
+      // Se receita bruta do ano anterior > R$ 78.000.000, usar lucro real
+      return previousYearGrossRevenue > REVENUE_THRESHOLD_FOR_REAL;
+    }
+    
+    // Função para calcular tributos sobre faturamento
+    function calculateTurnoverTaxes(grossRevenue, isLucroReal) {
+      var taxRate = isLucroReal ? TAX_RATE_REAL : TAX_RATE_PRESUMIDO;
+      return grossRevenue * taxRate;
+    }
+    
+    // Função para calcular tributos sobre lucro (EBT)
+    function calculateProfitTaxes(ebt, grossRevenue, isLucroReal) {
+      if(isLucroReal) {
+        // Lucro real: 34% sobre EBT
+        return ebt > 0 ? ebt * TAX_RATE : 0;
+      } else {
+        // Lucro presumido:
+        // IRPJ: 8% da receita bruta × 25% = 2% da receita bruta
+        // CSLL: 12% da receita bruta × 9% = 1,08% da receita bruta
+        // Total: 3,08% da receita bruta
+        var irpj = grossRevenue * PRESUMIDO_EBT_RATE_IRPJ * PRESUMIDO_IRPJ_RATE;
+        var csll = grossRevenue * PRESUMIDO_EBT_RATE_CSLL * PRESUMIDO_CSLL_RATE;
+        return irpj + csll;
+      }
+    }
+    
+    // Função para calcular receita líquida
+    function calculateNetRevenue(volumeM3, pricePerM3, isLucroReal) {
+      var grossRevenue = calculateGrossRevenue(volumeM3, pricePerM3);
+      var turnoverTaxes = calculateTurnoverTaxes(grossRevenue, isLucroReal);
+      return grossRevenue - turnoverTaxes;
+    }
+    
+    // Função para calcular taxa de inflação do ano (baseada na inflação do preço aplicada em junho)
+    // isRealModel: se true, retorna 0 (sem inflação)
+    function getAverageInflationForYear(year, isRealModel) {
+      // Se modelo real, não aplicar inflação
+      if(isRealModel) {
+        return 0;
+      }
+      
+      // Obter a taxa de inflação que será aplicada em junho deste ano
+      var inflationRate = 0;
+      
+      if(year === 2026) {
+        inflationRate = PRICE_INFLATION_2026;
+      } else if(year === 2027) {
+        inflationRate = PRICE_INFLATION_2027;
+      } else if(year === 2028) {
+        inflationRate = PRICE_INFLATION_2028;
+      } else if(year >= 2029) {
+        inflationRate = PRICE_INFLATION_DEFAULT;
+      }
+      
+      // A inflação é aplicada em junho, então para o cálculo do Ke nominal do ano,
+      // usamos a taxa de inflação que será aplicada naquele ano
+      return inflationRate;
+    }
+    
+    // Função para calcular Ke nominal baseado no Ke real e na inflação do ano
+    // isRealModel: se true, retorna keReal (sem ajuste por inflação)
+    function calculateNominalKe(keReal, year, isRealModel) {
+      // Se modelo real, não aplicar inflação no custo de capital
+      if(isRealModel) {
+        return keReal;
+      }
+      var inflation = getAverageInflationForYear(year, isRealModel);
+      // Ke nominal = (1 + Ke real) × (1 + inflação) - 1
+      return (1 + keReal) * (1 + inflation) - 1;
+    }
+    
+    // Preço base de venda
+    var PRICE_BASE = 2.3608; // R$ 2,3608/m³ (base)
+    
+    // Taxas de inflação para preço de venda (atualização em junho)
+    var PRICE_INFLATION_2026 = 0.0355298903635566; // 3,55298903635566%
+    var PRICE_INFLATION_2027 = 0.0398982642547305; // 3,98982642547305%
+    var PRICE_INFLATION_2028 = 0.0364989146159298; // 3,64989146159298%
+    var PRICE_INFLATION_DEFAULT = 0.035; // 3,50% (a partir de 2029)
+    
+    // Taxas de inflação para COGS e SG&A (atualização em janeiro)
+    var COGS_INFLATION_2027 = 0.0414828026974459; // 4,14828026974459%
+    var COGS_INFLATION_2028 = 0.0377496682215077; // 3,77496682215077%
+    var COGS_INFLATION_DEFAULT = 0.035; // 3,50% (a partir de 2029)
+    
+    // Função para calcular fator de inflação acumulado do preço até um determinado ano/mês
+    // isRealModel: se true, retorna 1.0 (sem inflação)
+    function getPriceInflationFactor(year, month, isRealModel) {
+      // Se modelo real, não aplicar inflação
+      if(isRealModel) {
+        return 1.0;
+      }
+      
+      var factor = 1.0;
+      
+      // Aplicar inflação de junho/2026 se já passou
+      if(year > 2026 || (year === 2026 && month >= 6)) {
+        factor *= (1 + PRICE_INFLATION_2026);
+      }
+      
+      // Aplicar inflação de junho/2027 se já passou
+      if(year > 2027 || (year === 2027 && month >= 6)) {
+        factor *= (1 + PRICE_INFLATION_2027);
+      }
+      
+      // Aplicar inflação de junho/2028 se já passou
+      if(year > 2028 || (year === 2028 && month >= 6)) {
+        factor *= (1 + PRICE_INFLATION_2028);
+      }
+      
+      // Aplicar inflação de junho/2029 se já passou
+      if(year > 2029 || (year === 2029 && month >= 6)) {
+        factor *= (1 + PRICE_INFLATION_DEFAULT);
+      }
+      
+      // Aplicar inflação de junho para cada ano após 2029
+      if(year > 2029) {
+        for(var y = 2030; y <= year; y++) {
+          // Aplicar inflação se já passou de junho no ano atual, ou se é um ano anterior
+          if(y < year || (y === year && month >= 6)) {
+            factor *= (1 + PRICE_INFLATION_DEFAULT);
+          }
+        }
+      }
+      
+      return factor;
+    }
+    
+    // Função para calcular fator de inflação acumulado do COGS/SG&A até um determinado ano/mês
+    // isRealModel: se true, retorna 1.0 (sem inflação)
+    function getCogsSgaInflationFactor(year, month, isRealModel) {
+      // Se modelo real, não aplicar inflação
+      if(isRealModel) {
+        return 1.0;
+      }
+      
+      var factor = 1.0;
+      
+      // Aplicar inflação de janeiro/2027 se já passou
+      if(year > 2027 || (year === 2027 && month >= 1)) {
+        factor *= (1 + COGS_INFLATION_2027);
+      }
+      
+      // Aplicar inflação de janeiro/2028 se já passou
+      if(year > 2028 || (year === 2028 && month >= 1)) {
+        factor *= (1 + COGS_INFLATION_2028);
+      }
+      
+      // Aplicar inflação de janeiro/2029 se já passou
+      if(year > 2029 || (year === 2029 && month >= 1)) {
+        factor *= (1 + COGS_INFLATION_DEFAULT);
+      }
+      
+      // Aplicar inflação de janeiro para cada ano após 2029
+      if(year > 2029) {
+        for(var y = 2030; y <= year; y++) {
+          // Aplicar inflação se já passou de janeiro no ano atual, ou se é um ano anterior
+          if(y < year || (y === year && month >= 1)) {
+            factor *= (1 + COGS_INFLATION_DEFAULT);
+          }
+        }
+      }
+      
+      return factor;
+    }
+    
+    // Função para obter valor do Brent baseado no cenário e no ano
+    // brentScenario: 'forward', 'bloomberg', ou 'custom'
+    // year: ano
+    // customBrent: valor customizado do Brent (usado apenas para cenário 'custom')
+    function getBrentValue(brentScenario, year, customBrent) {
+      if(brentScenario === 'forward') {
+        // Curva forward
+        if(year === 2026) return 60.58;
+        if(year === 2027) return 62.18;
+        if(year === 2028) return 64.05;
+        if(year === 2029) return 65.78;
+        if(year === 2030) return 67.15;
+        if(year === 2031) return 68.04;
+        if(year === 2032) return 68.54;
+        if(year >= 2033) return 68.63;
+        // Para anos anteriores a 2026, usar valor de 2026
+        return 60.58;
+      } else if(brentScenario === 'bloomberg') {
+        // Média Bloomberg
+        if(year === 2026) return 62.46;
+        if(year === 2027) return 64.50;
+        if(year >= 2028) return 70.00;
+        // Para anos anteriores a 2026, usar valor de 2026
+        return 62.46;
+      } else if(brentScenario === 'custom') {
+        // Customizado: usar valor do slider
+        return customBrent || 62.0;
+      }
+      // Fallback
+      return 62.0;
+    }
+    
+    // Função para obter preço nominal em R$/m³ para um determinado ano/mês
+    // isRealModel: se true, retorna PRICE_BASE sem inflação
+    function getNominalPrice(year, month, isRealModel) {
+      var factor = getPriceInflationFactor(year, month, isRealModel);
+      return PRICE_BASE * factor;
+    }
+    
+    // Função para obter preço baseado no cenário de preço
+    // priceScenario: 'default', 'renegociado', ou 'brent'
+    // year: ano (usado apenas para cenário 'default')
+    // month: mês (usado apenas para cenário 'default')
+    // brent: valor do Brent (usado apenas para cenário 'brent')
+    // pctBrent: percentual do Brent (usado apenas para cenário 'brent')
+    // useAverage: se true, retorna média ponderada do ano (apenas para cenário 'default')
+    // isRealModel: se true, não aplica inflação
+    function getPriceForScenario(priceScenario, year, month, brent, pctBrent, useAverage, isRealModel) {
+      if(priceScenario === 'default') {
+        // Cenário Default: aplica correção por inflação (se não for modelo real)
+        if(useAverage) {
+          return getAveragePriceForYear(year, isRealModel);
+        } else {
+          return getNominalPrice(year, month, isRealModel);
+        }
+      } else if(priceScenario === 'renegociado') {
+        // Cenário Renegociado: R$ 1,90/m³ fixo durante todos os anos
+        return 1.90;
+      } else if(priceScenario === 'brent') {
+        // Cenário % Brent: calcula como brent * % do Brent
+        var priceUSDperMMBtu = brent * (Math.max(0, pctBrent) / 100);
+        return (priceUSDperMMBtu * USD_BRL) / M3_PER_MMBTU;
+      }
+      // Fallback: retorna preço base
+      return PRICE_BASE;
+    }
+    
+    // Função para calcular preço médio ponderado do ano considerando inflação em junho
+    // isRealModel: se true, não aplica inflação
+    function getAveragePriceForYear(year, isRealModel) {
+      // Calcular dias antes de junho (janeiro a maio)
+      var daysBeforeJune = 0;
+      for(var m = 1; m < 6; m++) {
+        daysBeforeJune += getDaysInMonth(m, year);
+      }
+      // Calcular dias de junho em diante (junho a dezembro)
+      var daysFromJune = 0;
+      for(var m = 6; m <= 12; m++) {
+        daysFromJune += getDaysInMonth(m, year);
+      }
+      
+      // Preço antes de junho (sem inflação do ano atual)
+      var priceBeforeJune = getNominalPrice(year, 5, isRealModel); // Maio (antes de junho)
+      // Preço de junho em diante (com inflação do ano atual)
+      var priceFromJune = getNominalPrice(year, 6, isRealModel); // Junho (com inflação)
+      
+      // Calcular preço médio ponderado
+      var totalDays = daysBeforeJune + daysFromJune; // 365 ou 366 (ano bissexto)
+      var avgPrice = (priceBeforeJune * daysBeforeJune + priceFromJune * daysFromJune) / totalDays;
+      
+      return avgPrice;
+    }
+    
+    // Função para calcular receita bruta anual considerando variação de preço em junho
+    function calculateAnnualGrossRevenue(year, totalVolumeM3, dailyVolumeM3, priceScenario, brent, pct, isRealModel) {
+      // Calcular dias antes de junho (janeiro a maio)
+      var daysBeforeJune = 0;
+      for(var m = 1; m < 6; m++) {
+        daysBeforeJune += getDaysInMonth(m, year);
+      }
+      // Calcular dias de junho em diante (junho a dezembro)
+      var daysFromJune = 0;
+      for(var m = 6; m <= 12; m++) {
+        daysFromJune += getDaysInMonth(m, year);
+      }
+      
+      var totalDays = daysBeforeJune + daysFromJune; // 365 ou 366 (ano bissexto)
+      
+      // Calcular volumes proporcionais baseados na distribuição de dias
+      // Usar o volume total e distribuir proporcionalmente aos dias
+      var volumeBeforeJune = (totalVolumeM3 * daysBeforeJune) / totalDays;
+      var volumeFromJune = (totalVolumeM3 * daysFromJune) / totalDays;
+      
+      // Preços: para cenário "default", o preço varia em junho (inflação)
+      // Para "renegociado" e "brent", o preço é fixo durante todo o ano
+      var priceBeforeJune, priceFromJune;
+      if(priceScenario === 'default') {
+        // Cenário Default: preço varia em junho (inflação)
+        priceBeforeJune = getPriceForScenario(priceScenario, year, 5, brent, pct, false, isRealModel); // Maio (antes de junho)
+        priceFromJune = getPriceForScenario(priceScenario, year, 6, brent, pct, false, isRealModel); // Junho (com inflação)
+      } else {
+        // Cenário Renegociado ou Brent: preço fixo durante todo o ano
+        var fixedPrice = getPriceForScenario(priceScenario, year, 6, brent, pct, false, isRealModel);
+        priceBeforeJune = fixedPrice;
+        priceFromJune = fixedPrice;
+      }
+      
+      // Calcular receita bruta de cada período (com gross-up)
+      var grossRevenueBeforeJune = calculateGrossRevenue(volumeBeforeJune, priceBeforeJune);
+      var grossRevenueFromJune = calculateGrossRevenue(volumeFromJune, priceFromJune);
+      
+      // Receita bruta total
+      return grossRevenueBeforeJune + grossRevenueFromJune;
+    }
+    
+    // Função para obter COGS nominal anual para um determinado ano/mês
+    // isRealModel: se true, retorna COGS_ANUAL_BASE sem inflação
+    function getNominalCogs(year, month, isRealModel) {
+      var factor = getCogsSgaInflationFactor(year, month, isRealModel);
+      return COGS_ANUAL_BASE * factor;
+    }
+    
+    // Função para obter SG&A nominal anual para um determinado ano/mês
+    // isRealModel: se true, retorna SGA_ANUAL_BASE sem inflação
+    function getNominalSga(year, month, isRealModel) {
+      var factor = getCogsSgaInflationFactor(year, month, isRealModel);
+      return SGA_ANUAL_BASE * factor;
+    }
     
     // Reservas iniciais por categoria (em m³)
     var RESERVES_1P_INITIAL = 241.04 * 1_000_000; // 241,04 MMm³
@@ -570,8 +984,71 @@
       return 999999999;
     }
     
+    // Constante para reservas mínimas necessárias em 2035
+    var MIN_RESERVES_2035 = 21900000; // 21.900.000 m³ (60 mil m³/dia × 365 dias)
+    
+    // Função para calcular volume máximo permitido considerando reservas mínimas para 2035
+    function getMaxVolumeForReservesConstraint(year, curveType, fullVolume, totalReserves, availableReserves) {
+      // Aplicar restrição apenas para cenários 1P e 1P+1C com curva Full
+      var reservesMM = totalReserves / 1_000_000;
+      var is1POr1P1C = (reservesMM <= 362.31);
+      
+      if(!is1POr1P1C || curveType !== 'full') {
+        // Não aplicar restrição
+        return null;
+      }
+      
+      // Em 2035, limitar produção a 60.000 m³/dia (necessário para o contrato)
+      if(year === 2035) {
+        var maxDailyVolume2035 = 60000; // 60 mil m³/dia
+        // Garantir que não exceda as reservas disponíveis
+        var daysInYear = getDaysInYear(2035);
+        var maxProduction2035 = availableReserves;
+        var maxDailyFromReserves = maxProduction2035 / daysInYear;
+        return Math.min(maxDailyVolume2035, maxDailyFromReserves);
+      }
+      
+      // Para anos anteriores a 2035, garantir que sobre reservas suficientes para 2035
+      if(year > 2035) {
+        // Não aplicar restrição para anos após 2035
+        return null;
+      }
+      
+      // Volume necessário para 2035: 60 mil m³/dia × 365 dias = 21.900.000 m³
+      // Precisamos garantir que após todos os anos até 2034, sobre pelo menos MIN_RESERVES_2035
+      
+      // Calcular produção máxima permitida até 2034
+      var maxProductionUntil2034 = totalReserves - MIN_RESERVES_2035;
+      
+      // Calcular quanto já foi produzido até agora
+      var alreadyProduced = totalReserves - availableReserves;
+      
+      // Calcular quanto ainda pode ser produzido até 2034
+      var remainingProductionAllowed = maxProductionUntil2034 - alreadyProduced;
+      
+      // Se não há mais produção permitida, retornar 0
+      if(remainingProductionAllowed <= 0) {
+        return 0;
+      }
+      
+      // Calcular dias restantes até o final de 2034 (incluindo este ano)
+      var daysUntilEndOf2034 = 0;
+      for(var y = year; y <= 2034; y++) {
+        daysUntilEndOf2034 += getDaysInYear(y);
+      }
+      
+      // Distribuir a produção restante permitida pelos dias restantes até 2034
+      // Isso garante que a produção seja distribuída uniformemente
+      var maxDailyVolumeAverage = remainingProductionAllowed / daysUntilEndOf2034;
+      
+      // Retornar o volume diário máximo permitido
+      // Se a produção atual (fullVolume * 1000) for menor que o máximo permitido, não limitar
+      // Caso contrário, limitar ao máximo permitido
+      return maxDailyVolumeAverage;
+    }
+    
     // Função para obter volume diário baseado no cenário de curva e no ano (Cenário 1)
-    function getDailyVolumeC1(year, curveType, fullVolume){
+    function getDailyVolumeC1(year, curveType, fullVolume, totalReserves, availableReserves){
       var volume = 0;
       if(curveType === 'full'){
         volume = fullVolume * 1000; // mil m³/dia para m³/dia
@@ -594,13 +1071,22 @@
           volume = 60 * 1000; // 60 mil m³/dia
         }
       }
+      
+      // Aplicar restrição de reservas para 2035 (apenas 1P e 1P+1C com curva Full)
+      if(totalReserves !== undefined && availableReserves !== undefined) {
+        var maxVolumeConstraint = getMaxVolumeForReservesConstraint(year, curveType, fullVolume, totalReserves, availableReserves);
+        if(maxVolumeConstraint !== null) {
+          volume = Math.min(volume, maxVolumeConstraint);
+        }
+      }
+      
       // Aplicar teto de volume diário
       var ceiling = getDailyVolumeCeiling(year);
       return Math.min(volume, ceiling);
     }
     
     // Função para obter volume diário baseado no cenário de curva e no ano (Cenário 2)
-    function getDailyVolumeC2(year, curveType, fullVolume){
+    function getDailyVolumeC2(year, curveType, fullVolume, totalReserves, availableReserves){
       var volume = 0;
       if(curveType === 'full'){
         volume = fullVolume * 1000; // mil m³/dia para m³/dia
@@ -623,6 +1109,15 @@
           volume = 60 * 1000; // 60 mil m³/dia
         }
       }
+      
+      // Aplicar restrição de reservas para 2035 (apenas 1P e 1P+1C com curva Full)
+      if(totalReserves !== undefined && availableReserves !== undefined) {
+        var maxVolumeConstraint = getMaxVolumeForReservesConstraint(year, curveType, fullVolume, totalReserves, availableReserves);
+        if(maxVolumeConstraint !== null) {
+          volume = Math.min(volume, maxVolumeConstraint);
+        }
+      }
+      
       // Aplicar teto de volume diário
       var ceiling = getDailyVolumeCeiling(year);
       return Math.min(volume, ceiling);
@@ -718,8 +1213,12 @@
         var RESERVES_M3 = getReservesC1();
         var prodK = +document.getElementById('c1_prod').value;
         var curveType = document.getElementById('c1_curve').value;
+        var modelType = document.getElementById('c1_model').value;
+        var isRealModel = (modelType === 'real');
         var priceScenario = document.getElementById('c1_price_scenario').value;
-        var brent = +document.getElementById('c1_brent').value;
+        var brentScenario = document.getElementById('c1_brent_scenario').value;
+        var customBrent = +document.getElementById('c1_brent').value;
+        var brent = getBrentValue(brentScenario, START_YEAR, customBrent); // Valor inicial para exibição
         var pct   = +document.getElementById('c1_pct').value;
         var abd   = +document.getElementById('c1_abd').value;
         var capex = +document.getElementById('c1_capex').value;
@@ -747,9 +1246,17 @@
           prodLabel.textContent = 'Produção no cenário Full (não aplicável)';
         }
         
+        // Atualizar label do dropdown de modelo
+        var modelLabels = {'nominal': 'Nominal', 'real': 'Real'};
+        document.getElementById('c1_model_lbl').textContent = modelLabels[modelType];
+        
         // Atualizar label do dropdown de preço
         var priceLabels = {'default': 'Default', 'renegociado': 'Renegociado', 'brent': '% Brent'};
         document.getElementById('c1_price_scenario_lbl').textContent = priceLabels[priceScenario];
+        
+        // Atualizar label do dropdown de Brent
+        var brentLabels = {'forward': 'Curva forward', 'bloomberg': 'Média Bloomberg', 'custom': 'Customizado'};
+        document.getElementById('c1_brent_scenario_lbl').textContent = brentLabels[brentScenario];
         
         // Habilitar/desabilitar controles de % Brent baseado no cenário de preço
         var brentPriceBox = document.getElementById('c1_brent_price_box');
@@ -757,6 +1264,14 @@
           brentPriceBox.style.display = 'block';
         } else {
           brentPriceBox.style.display = 'none';
+        }
+        
+        // Habilitar/desabilitar slider customizado de Brent baseado no cenário
+        var brentCustomBox = document.getElementById('c1_brent_custom_box');
+        if(brentScenario === 'custom'){
+          brentCustomBox.style.display = 'block';
+        } else {
+          brentCustomBox.style.display = 'none';
         }
 
         document.getElementById('c1_prod_lbl').textContent = nf0(prodK);
@@ -780,26 +1295,15 @@
         var priceUSDperMMBtu = 0;
         var pricePctBrent = 0;
         
-        if(priceScenario === 'default'){
-          priceBRLperM3 = 2.3608; // R$ 2,3608/m³
-          // Converter para US$/MMBtu e % do Brent
-          priceUSDperMMBtu = (priceBRLperM3 * M3_PER_MMBTU) / USD_BRL;
-          pricePctBrent = brent > 0 ? (priceUSDperMMBtu / brent) * 100 : 0;
-        } else if(priceScenario === 'renegociado'){
-          priceBRLperM3 = 1.90; // R$ 1,90/m³
-          // Converter para US$/MMBtu e % do Brent
-          priceUSDperMMBtu = (priceBRLperM3 * M3_PER_MMBTU) / USD_BRL;
-          pricePctBrent = brent > 0 ? (priceUSDperMMBtu / brent) * 100 : 0;
-        } else if(priceScenario === 'brent'){
-          priceUSDperMMBtu = brent * (Math.max(0, pct)/100);
-          priceBRLperM3 = (priceUSDperMMBtu * USD_BRL) / M3_PER_MMBTU;
-          pricePctBrent = pct;
-        }
+        // Calcular preço médio do modelo (usando preço do primeiro ano como referência)
+        // Usar função que considera o cenário de preço
+        var priceBRLperM3FirstYear = getPriceForScenario(priceScenario, START_YEAR, 6, brent, pct, false, isRealModel);
+        pricePctBrent = brent > 0 ? ((priceBRLperM3FirstYear * M3_PER_MMBTU) / USD_BRL / brent) * 100 : 0;
         
-        document.getElementById('c1_price_usd_lbl').textContent = nf2(priceUSDperMMBtu);
+        document.getElementById('c1_price_usd_lbl').textContent = nf2((priceBRLperM3FirstYear * M3_PER_MMBTU) / USD_BRL);
         document.getElementById('c1_price_pct').textContent = pf1(pricePctBrent);
-        document.getElementById('c1_price_usd').textContent = nf2(priceUSDperMMBtu);
-        document.getElementById('c1_price_brl').textContent = nf2(priceBRLperM3);
+        document.getElementById('c1_price_usd').textContent = nf2((priceBRLperM3FirstYear * M3_PER_MMBTU) / USD_BRL);
+        document.getElementById('c1_price_brl').textContent = nf2(priceBRLperM3FirstYear);
 
         var decayRate = decayOn ? Math.max(0, Math.min(50, decayPct))/100 : 0;
 
@@ -812,31 +1316,54 @@
         
         for(var yearIdx = 0; yearIdx < maxYears && availableReserves > 0; yearIdx++){
           var year = START_YEAR + yearIdx;
-          var dailyM3 = getDailyVolumeC1(year, curveType, prodK);
+          var dailyM3 = getDailyVolumeC1(year, curveType, prodK, RESERVES_M3, availableReserves);
           
           if(dailyM3 <= 0) break; // Se não há produção definida para este ano, parar
           
-          var annualM3 = dailyM3 * 365;
+          var daysInYear = getDaysInYear(year);
+          var annualM3 = dailyM3 * daysInYear;
           var yearProduced = Math.min(annualM3, availableReserves);
           var frac = yearProduced / annualM3;
           
           // Se não há mais reservas suficientes para produzir, parar
           if(availableReserves < 1) break;
           
-          // Calcular receita para verificar corte econômico
-          var revenueMi = (yearProduced * priceBRLperM3) / 1_000_000;
-          var royaltiesMi = ROYALTY_RATE * revenueMi;
-          var cogsMi = (COGS_ANUAL * frac) / 1_000_000;
-          var sgaMi = (SGA_ANUAL * frac) / 1_000_000;
-          var leasingMi = (LEASING_ANUAL * frac) / 1_000_000;
-          var maintenanceCapexMi = revenueMi * MAINTENANCE_CAPEX_RATE;
+          // Calcular valores nominais para este ano
+          // Obter valor do Brent para este ano baseado no cenário
+          var brentForYear = getBrentValue(brentScenario, year, customBrent);
+          // Para preço, usar função que considera o cenário de preço
+          var nominalPrice = getPriceForScenario(priceScenario, year, 6, brentForYear, pct, true, isRealModel);
+          var nominalCogs = getNominalCogs(year, 6, isRealModel);
+          var nominalSga = getNominalSga(year, 6, isRealModel);
           
-          // EBITDA = Receita - Royalties - COGS - SG&A
+          // Calcular receita (com gross-up e tributos sobre faturamento)
+          // Determinar regime tributário baseado na receita bruta do ano anterior
+          var previousYearGrossRevenue = (yearIdx > 0 && years[yearIdx - 1]) ? years[yearIdx - 1].grossRevenue : 0;
+          var isLucroReal = determineTaxRegime(previousYearGrossRevenue);
+          
+          // Usar cálculo anual que considera variação de preço em junho
+          var grossRevenue = calculateAnnualGrossRevenue(year, yearProduced, dailyM3, priceScenario, brentForYear, pct, isRealModel);
+          var turnoverTaxes = calculateTurnoverTaxes(grossRevenue, isLucroReal);
+          var netRevenue = grossRevenue - turnoverTaxes;
+          
+          var grossRevenueMi = grossRevenue / 1_000_000;
+          var turnoverTaxesMi = turnoverTaxes / 1_000_000;
+          var revenueMi = netRevenue / 1_000_000; // Receita líquida em milhões
+          
+          // Royalties e Maintenance CapEx calculados sobre receita bruta
+          var royaltiesMi = ROYALTY_RATE * grossRevenueMi;
+          var maintenanceCapexMi = grossRevenueMi * MAINTENANCE_CAPEX_RATE;
+          
+          var cogsMi = (nominalCogs * frac) / 1_000_000;
+          var sgaMi = (nominalSga * frac) / 1_000_000;
+          var leasingMi = (LEASING_ANUAL * frac) / 1_000_000;
+          
+          // EBITDA = Receita líquida - Royalties - COGS - SG&A
           var ebitdaMi = revenueMi - royaltiesMi - cogsMi - sgaMi;
           // EBT = EBITDA - Leasing (leasing é despesa financeira)
           var ebtMi = ebitdaMi - leasingMi;
-          // Tributos = EBT * TAX_RATE (se EBT > 0)
-          var taxesMi = ebtMi > 0 ? TAX_RATE * ebtMi : 0;
+          // Tributos sobre lucro (considerando regime tributário)
+          var taxesMi = calculateProfitTaxes(ebtMi * 1_000_000, grossRevenue, isLucroReal) / 1_000_000;
           // Lucro líquido = EBT - Tributos
           var netProfitMi = ebtMi - taxesMi;
           var netProfitAnual = netProfitMi * 1_000_000; // Converter para R$
@@ -844,8 +1371,10 @@
           // Calcular lucro líquido mensal médio (dividir por 12 meses)
           var netProfitMensal = netProfitAnual / 12;
           
-          // Corte econômico: se lucro líquido mensal < R$ 100 mil, parar produção
-          if(netProfitMensal < MIN_PROFIT_THRESHOLD && yearProduced > 0){
+          // Corte econômico: se lucro líquido mensal < valor ajustado pela inflação, parar produção
+          // Usar mês 6 (meio do ano) como referência para o cálculo do threshold
+          var minProfitThreshold = getMinProfitThreshold(year, 6, isRealModel);
+          if(netProfitMensal < minProfitThreshold && yearProduced > 0){
             break;
           }
           
@@ -864,7 +1393,8 @@
             frac: frac,
             remaining: reservesAfterDecay,
             year: year,
-            dailyM3: dailyM3
+            dailyM3: dailyM3,
+            grossRevenue: grossRevenue // Armazenar receita bruta para determinar regime do próximo ano
           });
           
           // Se não há mais reservas após decaimento, parar
@@ -896,17 +1426,39 @@
           var year = yearData.year;
           var reservesRemainingMiM3 = yearData.remaining / 1_000_000;
           
-          // Calcular receita baseada no volume produzido e preço em R$/m³
-          var revenueMi = (yearData.produced * priceBRLperM3) / 1_000_000;
+          // Calcular valores nominais para este ano
+          // Obter valor do Brent para este ano baseado no cenário
+          var brentForYear = getBrentValue(brentScenario, year, customBrent);
+          // Para preço, usar função que considera o cenário de preço
+          var nominalPrice = getPriceForScenario(priceScenario, year, 6, brentForYear, pct, true, isRealModel);
+          var nominalCogs = getNominalCogs(year, 6, isRealModel);
+          var nominalSga = getNominalSga(year, 6, isRealModel);
+          
+          // Calcular receita (com gross-up e tributos sobre faturamento)
+          // Determinar regime tributário baseado na receita bruta do ano anterior
+          var previousYearGrossRevenue = (i > 0 && years[i - 1]) ? years[i - 1].grossRevenue : 0;
+          var isLucroReal = determineTaxRegime(previousYearGrossRevenue);
+          
+          // Usar receita bruta armazenada ou calcular se não existir
+          var grossRevenue = yearData.grossRevenue || calculateAnnualGrossRevenue(year, yearData.produced, yearData.dailyM3, priceScenario, brentForYear, pct, isRealModel);
+          var turnoverTaxes = calculateTurnoverTaxes(grossRevenue, isLucroReal);
+          var netRevenue = grossRevenue - turnoverTaxes;
+          
+          var grossRevenueMi = grossRevenue / 1_000_000;
+          var turnoverTaxesMi = turnoverTaxes / 1_000_000;
+          var revenueMi = netRevenue / 1_000_000; // Receita líquida em milhões
           totalRevenueMi += revenueMi;
 
-          var royaltiesMi = ROYALTY_RATE*revenueMi;
-          // COGS e SG&A proporcionais à fração do ano
-          var cogsMi = (COGS_ANUAL * frac) / 1_000_000;
-          var sgaMi = (SGA_ANUAL * frac) / 1_000_000;
+          // Royalties e Maintenance CapEx calculados sobre receita bruta
+          var royaltiesMi = ROYALTY_RATE * grossRevenueMi;
+          var maintenanceCapexMi = grossRevenueMi * MAINTENANCE_CAPEX_RATE;
+          
+          // COGS e SG&A proporcionais à fração do ano (valores nominais)
+          var cogsMi = (nominalCogs * frac) / 1_000_000;
+          var sgaMi = (nominalSga * frac) / 1_000_000;
           var leasingMi = (LEASING_ANUAL * frac) / 1_000_000;
-          var maintenanceCapexMi = revenueMi * MAINTENANCE_CAPEX_RATE;
-          // EBITDA = Receita - Royalties - COGS - SG&A
+          
+          // EBITDA = Receita líquida - Royalties - COGS - SG&A
           var ebitdaMi = revenueMi - royaltiesMi - cogsMi - sgaMi;
           totalEbitdaMi += ebitdaMi;
 
@@ -914,8 +1466,8 @@
 
           // EBT = EBITDA - Leasing (leasing é despesa financeira)
           var ebtMi = ebitdaMi - leasingMi;
-          // Tributos = EBT * TAX_RATE (se EBT > 0)
-          var taxesMi = ebtMi>0 ? TAX_RATE*ebtMi : 0;
+          // Tributos sobre lucro (considerando regime tributário)
+          var taxesMi = calculateProfitTaxes(ebtMi * 1_000_000, grossRevenue, isLucroReal) / 1_000_000;
 
           var capexMi = (i===0 ? Math.max(0,capex)+Math.max(0,buy) : 0);
           // Incluir Maintenance CapEx no Capex total
@@ -925,7 +1477,9 @@
           var fcfeMi = ebitdaMi - leasingMi - taxesMi - totalCapexMi - abdMi;
 
           var exp = isLast && frac < 1 ? (i + frac) : (i + 1);
-          var pvMi = fcfeMi / Math.pow(1+ke, exp);
+          // Calcular Ke nominal para este ano (baseado na inflação do ano)
+          var keNominal = calculateNominalKe(ke, year, isRealModel);
+          var pvMi = fcfeMi / Math.pow(1+keNominal, exp);
           npvMi += pvMi;
 
           times.push(exp);
@@ -938,7 +1492,7 @@
           tr.appendChild(td(frac.toFixed(3)));
           tr.appendChild(td(nf2(reservesRemainingMiM3)));
           tr.appendChild(td(nf0(prodMediaDiaria/1000))); // Convertendo para mil m³/dia para exibição
-          tr.appendChild(td(nf2(priceBRLperM3)));
+          tr.appendChild(td(nf2(nominalPrice)));
           tr.appendChild(td(nf2(revenueMi)));
           tr.appendChild(td(nf2(royaltiesMi)));
           tr.appendChild(td(nf2(ebitdaMi)));
@@ -951,9 +1505,11 @@
         }
 
         if(nYears===0){
-          npvMi = -(Math.max(0,capex)+Math.max(0,buy)) / Math.pow(1+ke,1);
+          // Calcular Ke nominal para o primeiro ano
+          var keNominalFirstYear = calculateNominalKe(ke, START_YEAR, isRealModel);
+          npvMi = -(Math.max(0,capex)+Math.max(0,buy)) / Math.pow(1+keNominalFirstYear, 1);
           var tr2 = document.createElement('tr');
-          tr2.innerHTML = '<td colspan="13" class="small">Sem produção. NPV considera Capex/compra no ano 1, descontado a Ke.</td>';
+          tr2.innerHTML = '<td colspan="13" class="small">Sem produção. NPV considera Capex/compra no ano 1, descontado a Ke nominal.</td>';
           tbody.appendChild(tr2);
         }
 
@@ -962,7 +1518,8 @@
         var reservasConsumidasMiM3 = producedTotalM3/1_000_000;
         var totalDays = 0;
         for(var j=0; j<years.length; j++){
-          totalDays += years[j].frac * 365;
+          var yearDays = getDaysInYear(years[j].year);
+          totalDays += years[j].frac * yearDays;
         }
         var volMedioK = totalDays > 0 ? (producedTotalM3/totalDays)/1000 : 0;
         var lastYear = nYears > 0 ? years[years.length - 1].year : '—';
@@ -993,8 +1550,12 @@
         var totalResM3 = getReservesC2();
         var prodK = +document.getElementById('c2_prod').value;
         var curveType = document.getElementById('c2_curve').value;
+        var modelType = document.getElementById('c2_model').value;
+        var isRealModel = (modelType === 'real');
         var priceScenario = document.getElementById('c2_price_scenario').value;
-        var brent = +document.getElementById('c2_brent').value;
+        var brentScenario = document.getElementById('c2_brent_scenario').value;
+        var customBrent = +document.getElementById('c2_brent').value;
+        var brent = getBrentValue(brentScenario, START_YEAR, customBrent); // Valor inicial para exibição
         var pct   = +document.getElementById('c2_pct').value;
         var abd   = +document.getElementById('c2_abd').value;
         var capex = +document.getElementById('c2_capex').value;
@@ -1027,9 +1588,17 @@
           prodLabel.textContent = 'Produção no cenário Full (não aplicável)';
         }
         
+        // Atualizar label do dropdown de modelo
+        var modelLabels = {'nominal': 'Nominal', 'real': 'Real'};
+        document.getElementById('c2_model_lbl').textContent = modelLabels[modelType];
+        
         // Atualizar label do dropdown de preço
         var priceLabels = {'default': 'Default', 'renegociado': 'Renegociado', 'brent': '% Brent'};
         document.getElementById('c2_price_scenario_lbl').textContent = priceLabels[priceScenario];
+        
+        // Atualizar label do dropdown de Brent
+        var brentLabels = {'forward': 'Curva forward', 'bloomberg': 'Média Bloomberg', 'custom': 'Customizado'};
+        document.getElementById('c2_brent_scenario_lbl').textContent = brentLabels[brentScenario];
         
         // Habilitar/desabilitar controles de % Brent baseado no cenário de preço
         var brentPriceBox = document.getElementById('c2_brent_price_box');
@@ -1037,6 +1606,14 @@
           brentPriceBox.style.display = 'block';
         } else {
           brentPriceBox.style.display = 'none';
+        }
+        
+        // Habilitar/desabilitar slider customizado de Brent baseado no cenário
+        var brentCustomBox = document.getElementById('c2_brent_custom_box');
+        if(brentScenario === 'custom'){
+          brentCustomBox.style.display = 'block';
+        } else {
+          brentCustomBox.style.display = 'none';
         }
 
         document.getElementById('c2_prod_lbl').textContent = nf0(prodK);
@@ -1080,25 +1657,18 @@
         var priceUSDperMMBtu = 0;
         var pricePctBrent = 0;
         
-        if(priceScenario === 'default'){
-          priceBRLperM3 = 2.3608; // R$ 2,3608/m³
-          // Converter para US$/MMBtu e % do Brent
-          priceUSDperMMBtu = (priceBRLperM3 * M3_PER_MMBTU) / USD_BRL;
-          pricePctBrent = brent > 0 ? (priceUSDperMMBtu / brent) * 100 : 0;
-        } else if(priceScenario === 'renegociado'){
-          priceBRLperM3 = 1.90; // R$ 1,90/m³
-          // Converter para US$/MMBtu e % do Brent
-          priceUSDperMMBtu = (priceBRLperM3 * M3_PER_MMBTU) / USD_BRL;
-          pricePctBrent = brent > 0 ? (priceUSDperMMBtu / brent) * 100 : 0;
-        } else if(priceScenario === 'brent'){
-          priceUSDperMMBtu = brent * (Math.max(0, Math.min(32, pct))/100);
-          priceBRLperM3 = (priceUSDperMMBtu * USD_BRL) / M3_PER_MMBTU;
-          pricePctBrent = pct;
-        }
+        // Calcular preço médio do modelo (usando preço do primeiro mês de operação como referência)
+        // Usar função que considera o cenário de preço
+        var firstOpMonth = opStartM;
+        var firstOpYear = START_YEAR + Math.floor(firstOpMonth / 12);
+        var firstOpMonthInYear = (firstOpMonth % 12) + 1;
+        var brentForFirstMonth = getBrentValue(brentScenario, firstOpYear, customBrent);
+        var priceBRLperM3FirstMonth = getPriceForScenario(priceScenario, firstOpYear, firstOpMonthInYear, brentForFirstMonth, pct, false, isRealModel);
+        pricePctBrent = brentForFirstMonth > 0 ? ((priceBRLperM3FirstMonth * M3_PER_MMBTU) / USD_BRL / brentForFirstMonth) * 100 : 0;
         
         document.getElementById('c2_price_pct').textContent = pf1(pricePctBrent);
-        document.getElementById('c2_price_usd').textContent = nf2(priceUSDperMMBtu);
-        document.getElementById('c2_price_brl').textContent = nf2(priceBRLperM3);
+        document.getElementById('c2_price_usd').textContent = nf2((priceBRLperM3FirstMonth * M3_PER_MMBTU) / USD_BRL);
+        document.getElementById('c2_price_brl').textContent = nf2(priceBRLperM3FirstMonth);
 
         var capexMonths = Math.max(1, build), opStartM = build;
         var totalCapexMi = Math.max(0,capex), capexPerMonthMi = totalCapexMi/capexMonths;
@@ -1123,38 +1693,67 @@
           var year = START_YEAR + Math.floor(month/12);
 
           // Obter volume diário baseado no cenário de curva e no ano
-          var dailyM3 = getDailyVolumeC2(year, curveType, prodK);
-          var monthlyM3 = dailyM3 * DAYS_PER_MONTH;
+          var dailyM3 = getDailyVolumeC2(year, curveType, prodK, totalResM3, availableReserves);
+          // Calcular mês no ano (1-12)
+          var monthInYear = (month % 12) + 1;
+          var daysInThisMonth = getDaysInMonth(monthInYear, year);
+          var monthlyM3 = dailyM3 * daysInThisMonth;
 
           var mProd=0;
           if(month>=opStartM && monthlyM3>0 && availableReserves > 0){
             mProd = Math.min(monthlyM3, availableReserves);
           }
           
-          // Calcular receita para verificar corte econômico (antes de subtrair das reservas)
-          var revenueMi = (mProd * priceBRLperM3) / 1_000_000;
-          var royaltiesMi = ROYALTY_RATE*revenueMi;
-          var cogsMi = (COGS_ANUAL / 12) / 1_000_000;
-          var sgaMi = (SGA_ANUAL / 12) / 1_000_000;
-          var leasingMi = (LEASING_ANUAL / 12) / 1_000_000;
-          var maintenanceCapexMi = revenueMi * MAINTENANCE_CAPEX_RATE;
+          // Calcular valores nominais para este mês (monthInYear já foi calculado acima)
+          // Obter valor do Brent para este ano baseado no cenário
+          var brentForYear = getBrentValue(brentScenario, year, customBrent);
+          // Para preço, usar função que considera o cenário de preço
+          var nominalPrice = getPriceForScenario(priceScenario, year, monthInYear, brentForYear, pct, false, isRealModel);
+          var nominalCogs = getNominalCogs(year, monthInYear, isRealModel);
+          var nominalSga = getNominalSga(year, monthInYear, isRealModel);
+          
+          // Calcular receita (com gross-up e tributos sobre faturamento)
+          // Determinar regime tributário baseado na receita bruta do ano anterior
+          var previousYear = year - 1;
+          var previousYearGrossRevenue = (previousYear >= START_YEAR && yearMap[previousYear]) ? 
+            (yearMap[previousYear].grossRevenue || 0) : 0;
+          var isLucroReal = determineTaxRegime(previousYearGrossRevenue);
+          
+          var grossRevenue = calculateGrossRevenue(mProd, nominalPrice);
+          var turnoverTaxes = calculateTurnoverTaxes(grossRevenue, isLucroReal);
+          var netRevenue = grossRevenue - turnoverTaxes;
+          
+          var grossRevenueMi = grossRevenue / 1_000_000;
+          var turnoverTaxesMi = turnoverTaxes / 1_000_000;
+          var revenueMi = netRevenue / 1_000_000; // Receita líquida em milhões
+          
+          // Royalties e Maintenance CapEx calculados sobre receita bruta
+          var royaltiesMi = ROYALTY_RATE * grossRevenueMi;
+          var maintenanceCapexMi = grossRevenueMi * MAINTENANCE_CAPEX_RATE;
+          
+          // Calcular valores mensais proporcionais aos dias do mês
+          var daysInYear = getDaysInYear(year);
+          var cogsMi = (nominalCogs * daysInThisMonth / daysInYear) / 1_000_000;
+          var sgaMi = (nominalSga * daysInThisMonth / daysInYear) / 1_000_000;
+          var leasingMi = (LEASING_ANUAL * daysInThisMonth / daysInYear) / 1_000_000;
           
           var capexThis = (month<capexMonths) ? capexPerMonthMi : 0;
           // Incluir Maintenance CapEx no Capex total
           var totalCapexThis = capexThis + maintenanceCapexMi;
           
-          // EBITDA = Receita - Royalties - COGS - SG&A
+          // EBITDA = Receita líquida - Royalties - COGS - SG&A
           var ebitdaMi = revenueMi - royaltiesMi - cogsMi - sgaMi;
           // EBT = EBITDA - Leasing (leasing é despesa financeira)
           var ebtMi = ebitdaMi - leasingMi;
-          // Tributos = EBT * TAX_RATE (se EBT > 0)
-          var taxesMi = ebtMi > 0 ? TAX_RATE * ebtMi : 0;
+          // Tributos sobre lucro (considerando regime tributário)
+          var taxesMi = calculateProfitTaxes(ebtMi * 1_000_000, grossRevenue, isLucroReal) / 1_000_000;
           // Lucro líquido = EBT - Tributos
           var netProfitMi = ebtMi - taxesMi;
           var netProfit = netProfitMi * 1_000_000; // Converter para R$
           
-          // Corte econômico: se lucro líquido < R$ 100 mil, parar produção
-          if(mProd > 0 && netProfit < MIN_PROFIT_THRESHOLD){
+          // Corte econômico: se lucro líquido < valor ajustado pela inflação, parar produção
+          var minProfitThreshold = getMinProfitThreshold(year, monthInYear, isRealModel);
+          if(mProd > 0 && netProfit < minProfitThreshold){
             break;
           }
           
@@ -1205,11 +1804,13 @@
           // DRE sem abandono
           // EBT = EBITDA - Depreciação - Leasing (leasing é despesa financeira)
           var ebtUnlev = ebitdaMi - depMi - leasingMi;
-          var taxUnlev = ebtUnlev>0 ? TAX_RATE*ebtUnlev : 0;
+          // Tributos sobre lucro (considerando regime tributário) - desalavancado
+          var taxUnlev = calculateProfitTaxes(ebtUnlev * 1_000_000, grossRevenue, isLucroReal) / 1_000_000;
           var netIncUnlev = ebtUnlev - taxUnlev;
 
           var ebtLev = ebtUnlev - interestMi;
-          var taxLev = ebtLev>0 ? TAX_RATE*ebtLev : 0;
+          // Tributos sobre lucro (considerando regime tributário) - alavancado
+          var taxLev = calculateProfitTaxes(ebtLev * 1_000_000, grossRevenue, isLucroReal) / 1_000_000;
           var netIncLev = ebtLev - taxLev;
 
           // FCFE (abandono apenas em caixa)
@@ -1217,8 +1818,10 @@
           var netBorrow = drawMi - principalMi;
           var fcfeL = netIncLev + depMi - totalCapexThis + netBorrow - abdCashMi;
 
-          var pvU = fcfeU/Math.pow(1+ke, tYears);
-          var pvL = fcfeL/Math.pow(1+ke, tYears);
+          // Calcular Ke nominal para este ano (baseado na inflação do ano)
+          var keNominal = calculateNominalKe(ke, year, isRealModel);
+          var pvU = fcfeU/Math.pow(1+keNominal, tYears);
+          var pvL = fcfeL/Math.pow(1+keNominal, tYears);
           npvU += pvU; npvL += pvL;
 
           mTimesU.push(tYears); mCfsU.push(fcfeU);
@@ -1226,7 +1829,7 @@
 
           var year = START_YEAR + Math.floor(month/12);
           if(!yearMap[year]){
-            yearMap[year] = {frac:0,revenue:0,royalties:0,ebitda:0,aband:0,taxes:0,capex:0,fcfe:0,pv:0,reservesRemaining:0,producedM3:0};
+            yearMap[year] = {frac:0,revenue:0,royalties:0,ebitda:0,aband:0,taxes:0,capex:0,fcfe:0,pv:0,reservesRemaining:0,producedM3:0,grossRevenue:0};
           }
           var ym = yearMap[year];
           ym.revenue += revenueMi;
@@ -1238,8 +1841,13 @@
           ym.fcfe += fcfeU;
           ym.pv += pvU;
           ym.producedM3 += mProd; // Acumular produção mensal
+          ym.grossRevenue += grossRevenue; // Acumular receita bruta para determinar regime do próximo ano
+          ym.grossRevenue += grossRevenue; // Acumular receita bruta para determinar regime do próximo ano
           if(monthlyM3>0 && mProd>0){
-            ym.frac += Math.min(1, mProd/monthlyM3)/12;
+            // Calcular fração do ano baseada nos dias reais do mês
+            var daysInThisMonth = getDaysInMonth(monthInYear, year);
+            var daysInYear = getDaysInYear(year);
+            ym.frac += (Math.min(1, mProd/monthlyM3) * daysInThisMonth) / daysInYear;
           }
           
           // Atualizar reservas restantes ao final de cada ano (após decaimento)
@@ -1260,7 +1868,16 @@
         document.getElementById('c2_npv_lev').textContent = nf2(npvL);
 
         var opMonths = Math.max(0, month - build);
-        var volMedK = opMonths>0 ? (producedM3/(opMonths*DAYS_PER_MONTH))/1000 : 0;
+        // Calcular total de dias de operação somando os dias corretos de cada mês
+        var totalDays = 0;
+        if(opMonths > 0) {
+          for(var m = build; m < month; m++) {
+            var mYear = START_YEAR + Math.floor(m / 12);
+            var mMonthInYear = (m % 12) + 1;
+            totalDays += getDaysInMonth(mMonthInYear, mYear);
+          }
+        }
+        var volMedK = totalDays > 0 ? (producedM3 / totalDays) / 1000 : 0;
         var lastYear = opMonths>0 ? (START_YEAR + Math.floor((build + opMonths - 1)/12)) : '—';
 
         document.getElementById('c2_volmed').textContent = nf0(volMedK);
@@ -1293,13 +1910,19 @@
             function td(val){ var cell=document.createElement('td'); cell.textContent=val; return cell; }
             var reservesRemainingMiM3 = data.reservesRemaining / 1_000_000;
             // Calcular produção média diária: produção total / (dias do ano * fração)
-            var diasAno = data.frac * 365;
+            var yearDays = getDaysInYear(y);
+            var diasAno = data.frac * yearDays;
             var prodMediaDiaria = diasAno > 0 ? (data.producedM3 / diasAno) : 0; // m³/dia
+            // Calcular preço médio nominal do ano (usando mês 6 como referência)
+            // Obter valor do Brent para este ano baseado no cenário
+            var brentForYear = getBrentValue(brentScenario, y, customBrent);
+            // Para preço, usar função que considera o cenário de preço
+            var avgNominalPrice = getPriceForScenario(priceScenario, y, 6, brentForYear, pct, true);
             tr.appendChild(td(y));
             tr.appendChild(td(data.frac.toFixed(3)));
             tr.appendChild(td(nf2(reservesRemainingMiM3)));
             tr.appendChild(td(nf0(prodMediaDiaria/1000))); // Convertendo para mil m³/dia para exibição
-            tr.appendChild(td(nf2(priceBRLperM3)));
+            tr.appendChild(td(nf2(avgNominalPrice)));
             tr.appendChild(td(nf2(data.revenue)));
             tr.appendChild(td(nf2(data.royalties)));
             tr.appendChild(td(nf2(data.ebitda)));
@@ -1316,10 +1939,11 @@
         var c2YearsArray = [];
         yearKeys.forEach(function(y){
           var data = yearMap[y];
+          var yearDays = getDaysInYear(y);
           c2YearsArray.push({
             year: y,
             produced: data.producedM3 || 0,
-            dailyM3: data.producedM3 > 0 ? (data.producedM3 / (data.frac * 365)) : 0,
+            dailyM3: data.producedM3 > 0 ? (data.producedM3 / (data.frac * yearDays)) : 0,
             remaining: data.reservesRemaining || 0,
             frac: data.frac || 0
           });
@@ -1339,10 +1963,10 @@
 
     // Bind
     function bindInputs(){
-      ['c1_reserves','c1_curve','c1_price_scenario','c1_prod','c1_brent','c1_pct','c1_abd','c1_capex','c1_buy','c1_ke','c1_decay']
+      ['c1_reserves','c1_curve','c1_model','c1_price_scenario','c1_brent_scenario','c1_prod','c1_brent','c1_pct','c1_abd','c1_capex','c1_buy','c1_ke','c1_decay']
         .forEach(function(id){ var el=document.getElementById(id); el.addEventListener('input', recalcC1); el.addEventListener('change', recalcC1); });
 
-      ['c2_reserves','c2_curve','c2_price_scenario','c2_prod','c2_brent','c2_pct','c2_abd','c2_capex','c2_build','c2_debt_pct','c2_grace','c2_maturity','c2_rate','c2_ke','c2_decay']
+      ['c2_reserves','c2_curve','c2_model','c2_price_scenario','c2_brent_scenario','c2_prod','c2_brent','c2_pct','c2_abd','c2_capex','c2_build','c2_debt_pct','c2_grace','c2_maturity','c2_rate','c2_ke','c2_decay']
         .forEach(function(id){ var el=document.getElementById(id); el.addEventListener('input', recalcC2); el.addEventListener('change', recalcC2); });
 
       document.getElementById('c1_decay_on').addEventListener('change', recalcC1);
@@ -1353,7 +1977,9 @@
         // Defaults C1
         document.getElementById('c1_reserves').value=992.12; // 1P+3C como padrão
         document.getElementById('c1_curve').value='full';
+        document.getElementById('c1_model').value='nominal';
         document.getElementById('c1_price_scenario').value='default';
+        document.getElementById('c1_brent_scenario').value='forward';
         document.getElementById('c1_prod').value=150;
         document.getElementById('c1_brent').value=62.0;
         document.getElementById('c1_pct').value=10;
@@ -1366,7 +1992,9 @@
         // Defaults C2
         document.getElementById('c2_reserves').value=992.12; // 1P+3C como padrão
         document.getElementById('c2_curve').value='full';
+        document.getElementById('c2_model').value='nominal';
         document.getElementById('c2_price_scenario').value='default';
+        document.getElementById('c2_brent_scenario').value='forward';
         document.getElementById('c2_prod').value=150;
         document.getElementById('c2_brent').value=62.0;
         document.getElementById('c2_pct').value=25;
@@ -2211,3 +2839,4 @@
   </script>
 </body>
 </html>
+
