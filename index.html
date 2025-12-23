@@ -120,11 +120,9 @@
       .kpi[data-kpi-order="4"] { order: 4; } /* Último ano - Linha 2 */
       .kpi[data-kpi-order="5"] { order: 5; } /* Preço médio - Linha 3 */
       .kpi[data-kpi-order="6"] { order: 6; } /* Margem EBITDA - Linha 3 */
-      .kpi[data-kpi-order="7"] { order: 7; } /* TIR - Linha 4 (ocupa 2 colunas) */
-      /* TIR ocupa 2 colunas na linha 4 */
-      .kpi[data-kpi-order="7"] {
-        grid-column: 1 / -1;
-      }
+      .kpi[data-kpi-order="7"] { order: 7; } /* TIR - Linha 4 */
+      .kpi[data-kpi-order="8"] { order: 8; } /* EV/EBITDA implícito - Linha 4 */
+      /* TIR e EV/EBITDA implícito ficam lado a lado na linha 4 */
       /* Garantir que todos os cards tenham a mesma altura usando grid */
       .kpi {
         min-height: 0;
@@ -194,6 +192,11 @@
             <div class="kpi kpi-lor-stone" data-kpi-order="7">
               <div class="cap">TIR (a.a., nominal)</div>
               <div class="val"><span id="c1_irr">—</span></div>
+            </div>
+            <div class="kpi kpi-lor-ice" data-kpi-order="8">
+              <div class="cap">EV/EBITDA implícito</div>
+              <div class="val"><span id="c1_ev_ebitda">—</span></div>
+              <div class="sub" style="font-size: 11px; color: var(--muted); margin-top:4px;">NPV / PV EBITDA 2028</div>
             </div>
           </div>
         </section>
@@ -359,6 +362,11 @@
             <div class="kpi kpi-lor-stone" data-kpi-order="7">
               <div class="cap">TIR (desalav. / alav.)</div>
               <div class="val"><span id="c2_irr_unlev">—</span> / <span id="c2_irr_lev">—</span></div>
+            </div>
+            <div class="kpi kpi-lor-ice" data-kpi-order="8">
+              <div class="cap">EV/EBITDA implícito</div>
+              <div class="val"><span id="c2_ev_ebitda">—</span></div>
+              <div class="sub" style="font-size: 11px; color: var(--muted); margin-top:4px;">NPV / PV EBITDA 2028</div>
             </div>
           </div>
         </section>
@@ -535,6 +543,22 @@
           <div class="chart-scroll">
             <div class="chart-inner" id="reservesChartContainer">
               <canvas id="reservesChart"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="padding: 20px; margin-top: 16px;">
+          <h3 style="font-size: 14px; margin: 0 0 16px; font-weight: 600;">Receita Líquida e Margem EBITDA (2026-2040)</h3>
+          <div class="chart-scroll">
+            <div class="chart-inner" id="revenueChartContainer">
+              <canvas id="revenueChart"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="padding: 20px; margin-top: 16px;">
+          <h3 style="font-size: 14px; margin: 0 0 16px; font-weight: 600;">FCFE Acumulado (2026-2040)</h3>
+          <div class="chart-scroll">
+            <div class="chart-inner" id="fcfeChartContainer">
+              <canvas id="fcfeChart"></canvas>
             </div>
           </div>
         </div>
@@ -1129,6 +1153,7 @@
     function nf4(v){ return (v||0).toLocaleString('pt-BR', {minimumFractionDigits:4, maximumFractionDigits:4}); }
     function pf1(v){ return (v||0).toLocaleString('pt-BR', {minimumFractionDigits:1, maximumFractionDigits:1}); }
     function pf2(v){ return (v||0).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+    function formatMultiple(v){ return (v||0).toLocaleString('pt-BR', {minimumFractionDigits:1, maximumFractionDigits:1}) + 'x'; }
 
     // XIRR robusto (prioriza raiz positiva)
     function xirr(cfs, ts){
@@ -1388,13 +1413,35 @@
             reservesAfterDecay = availableReserves;
           }
           
+          // Calcular valores para armazenar
+          var turnoverTaxes = calculateTurnoverTaxes(grossRevenue, isLucroReal);
+          var netRevenue = grossRevenue - turnoverTaxes;
+          var revenueMi = netRevenue / 1_000_000; // Receita líquida em milhões
+          var grossRevenueMi = grossRevenue / 1_000_000;
+          var royaltiesMi = ROYALTY_RATE * grossRevenueMi;
+          var maintenanceCapexMi = grossRevenueMi * MAINTENANCE_CAPEX_RATE;
+          var cogsMi = (nominalCogs * frac) / 1_000_000;
+          var sgaMi = (nominalSga * frac) / 1_000_000;
+          var leasingMi = (LEASING_ANUAL * frac) / 1_000_000;
+          var ebitdaMi = revenueMi - royaltiesMi - cogsMi - sgaMi;
+          var ebtMi = ebitdaMi - leasingMi;
+          var taxesMi = calculateProfitTaxes(ebtMi * 1_000_000, grossRevenue, isLucroReal) / 1_000_000;
+          var capexMi = (yearIdx === 0 ? Math.max(0,capex)+Math.max(0,buy) : 0);
+          var totalCapexMi = capexMi + maintenanceCapexMi;
+          // FCFE sem abandono (abandono será aplicado apenas no último ano, calculado depois)
+          var fcfeMi = ebitdaMi - leasingMi - taxesMi - totalCapexMi;
+          
           years.push({
             produced: yearProduced,
             frac: frac,
             remaining: reservesAfterDecay,
             year: year,
             dailyM3: dailyM3,
-            grossRevenue: grossRevenue // Armazenar receita bruta para determinar regime do próximo ano
+            grossRevenue: grossRevenue, // Armazenar receita bruta para determinar regime do próximo ano
+            revenueMi: revenueMi, // Receita líquida em milhões
+            ebitdaMi: ebitdaMi, // EBITDA em milhões
+            fcfeMi: fcfeMi, // FCFE em milhões (sem abandono, será ajustado depois)
+            isLastYear: false // Será atualizado depois
           });
           
           // Se não há mais reservas após decaimento, parar
@@ -1402,6 +1449,13 @@
         }
         
         var nYears = years.length;
+        
+        // Ajustar FCFE do último ano para considerar abandono
+        if(nYears > 0){
+          var lastYearData = years[nYears - 1];
+          var abdMi = Math.max(0, abd);
+          lastYearData.fcfeMi = lastYearData.fcfeMi - abdMi;
+        }
 
         var npvMi = 0;
         var totalRevenueMi = 0;
@@ -1417,6 +1471,8 @@
         if(currentActiveScenario === 'c1'){
           updateVolumeChart(years);
           updateReservesChart(years);
+          updateRevenueChart(years);
+          updateFcfeChart(years);
         }
 
         for(var i=0; i<nYears; i++){
@@ -1514,6 +1570,33 @@
         }
 
         document.getElementById('c1_npv').textContent = nf2(npvMi);
+
+        // Calcular EV/EBITDA implícito
+        var evEbitdaImpl = '—';
+        var ebitda2028 = null;
+        var ebitda2028YearIdx = -1;
+        var ebitda2028Frac = 0;
+        for(var j=0; j<years.length; j++){
+          if(years[j].year === 2028){
+            ebitda2028 = years[j].ebitdaMi;
+            ebitda2028YearIdx = j;
+            ebitda2028Frac = years[j].frac;
+            break;
+          }
+        }
+        if(ebitda2028 !== null && ebitda2028 > 0 && npvMi !== 0){
+          // Calcular o Present Value do EBITDA de 2028 usando a mesma mecânica de desconto do FCFE
+          var year2028 = 2028;
+          var isLast2028 = (ebitda2028YearIdx === years.length - 1);
+          // Mesma lógica usada para o FCFE: exp = isLast && frac < 1 ? (i + frac) : (i + 1)
+          var exp2028 = isLast2028 && ebitda2028Frac < 1 ? (ebitda2028YearIdx + ebitda2028Frac) : (ebitda2028YearIdx + 1);
+          var keNominal2028 = calculateNominalKe(ke, year2028, isRealModel);
+          var pvEbitda2028 = ebitda2028 / Math.pow(1+keNominal2028, exp2028);
+          if(pvEbitda2028 > 0){
+            evEbitdaImpl = formatMultiple(npvMi / pvEbitda2028);
+          }
+        }
+        document.getElementById('c1_ev_ebitda').textContent = evEbitdaImpl;
 
         var reservasConsumidasMiM3 = producedTotalM3/1_000_000;
         var totalDays = 0;
@@ -1867,6 +1950,26 @@
         document.getElementById('c2_npv_unlev').textContent = nf2(npvU);
         document.getElementById('c2_npv_lev').textContent = nf2(npvL);
 
+        // Calcular EV/EBITDA implícito (usando NPV desalavancado)
+        var evEbitdaImplC2 = '—';
+        if(yearMap[2028] && yearMap[2028].ebitda > 0 && npvU !== 0){
+          // Calcular o Present Value do EBITDA de 2028 usando a mesma mecânica de desconto do FCFE
+          var year2028 = 2028;
+          // O EBITDA de 2028 no yearMap é acumulado ao longo do ano
+          // Vamos usar o mês médio de 2028 para o desconto (aproximadamente mês 30, considerando meio do ano)
+          // O primeiro mês de 2028 seria: (2028 - START_YEAR) * 12 = 24 meses
+          // O mês médio seria aproximadamente: 24 + 6 = 30 meses
+          var month2028Start = (2028 - START_YEAR) * 12; // Mês inicial de 2028
+          var month2028Mid = month2028Start + 6; // Mês médio de 2028 (aproximado)
+          var tYears2028 = month2028Mid / 12; // Mesma lógica usada para o FCFE (tYears = month/12)
+          var keNominal2028 = calculateNominalKe(ke, year2028, isRealModel);
+          var pvEbitda2028 = yearMap[2028].ebitda / Math.pow(1+keNominal2028, tYears2028);
+          if(pvEbitda2028 > 0){
+            evEbitdaImplC2 = formatMultiple(npvU / pvEbitda2028);
+          }
+        }
+        document.getElementById('c2_ev_ebitda').textContent = evEbitdaImplC2;
+
         var opMonths = Math.max(0, month - build);
         // Calcular total de dias de operação somando os dias corretos de cada mês
         var totalDays = 0;
@@ -1945,7 +2048,10 @@
             produced: data.producedM3 || 0,
             dailyM3: data.producedM3 > 0 ? (data.producedM3 / (data.frac * yearDays)) : 0,
             remaining: data.reservesRemaining || 0,
-            frac: data.frac || 0
+            frac: data.frac || 0,
+            revenueMi: data.revenue || 0, // Receita líquida em milhões
+            ebitdaMi: data.ebitda || 0, // EBITDA em milhões
+            fcfeMi: data.fcfe || 0 // FCFE em milhões
           });
         });
         currentC2Data = c2YearsArray;
@@ -1954,6 +2060,8 @@
         if(currentActiveScenario === 'c2'){
           updateVolumeChart(c2YearsArray);
           updateReservesChart(c2YearsArray);
+          updateRevenueChart(c2YearsArray);
+          updateFcfeChart(c2YearsArray);
         }
 
       }catch(e){
@@ -2025,6 +2133,8 @@
         if(currentC1Data){
           updateVolumeChart(currentC1Data);
           updateReservesChart(currentC1Data);
+          updateRevenueChart(currentC1Data);
+          updateFcfeChart(currentC1Data);
         }
       });
       b2.addEventListener('click', function(){
@@ -2035,6 +2145,8 @@
         if(currentC2Data){
           updateVolumeChart(currentC2Data);
           updateReservesChart(currentC2Data);
+          updateRevenueChart(currentC2Data);
+          updateFcfeChart(currentC2Data);
         }
       });
     }
@@ -2695,6 +2807,319 @@
       reservesChart.update();
     }
 
+    // Gráfico de Receita Líquida e Margem EBITDA
+    var revenueChart = null;
+    
+    function initRevenueChart(){
+      var ctx = document.getElementById('revenueChart');
+      if(!ctx) return;
+      
+      revenueChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: [],
+          datasets: [
+            {
+              label: 'Receita Líquida (R$ mi)',
+              data: [],
+              backgroundColor: 'rgba(54, 162, 235, 0.8)',
+              yAxisID: 'y',
+              datalabels: {
+                anchor: 'end',
+                align: 'top',
+                color: '#000',
+                font: {
+                  size: window.innerWidth <= 768 ? 9 : 11
+                },
+                formatter: function(value) {
+                  if(value > 0) {
+                    return value.toFixed(1);
+                  }
+                  return '';
+                }
+              }
+            },
+            {
+              type: 'line',
+              label: 'Margem EBITDA (%)',
+              data: [],
+              borderColor: 'rgba(255, 99, 132, 1)',
+              backgroundColor: 'rgba(255, 99, 132, 0.1)',
+              yAxisID: 'y1',
+              borderWidth: 2,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              fill: false,
+              tension: 0.1,
+              datalabels: {
+                anchor: 'end',
+                align: 'top',
+                color: 'rgba(255, 99, 132, 1)',
+                font: {
+                  weight: 'bold',
+                  size: window.innerWidth <= 768 ? 9 : 11
+                },
+                formatter: function(value) {
+                  if(value !== null && value !== undefined) {
+                    return value.toFixed(1) + '%';
+                  }
+                  return '';
+                }
+              }
+            }
+          ]
+        },
+        plugins: [window.ChartDataLabels || ChartDataLabels],
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false,
+          },
+          scales: {
+            y: {
+              type: 'linear',
+              display: true,
+              position: 'left',
+              title: {
+                display: true,
+                text: 'Receita Líquida (R$ milhões)',
+                font: {
+                  size: window.innerWidth <= 768 ? 10 : 12
+                }
+              },
+              ticks: {
+                font: {
+                  size: window.innerWidth <= 768 ? 9 : 11
+                }
+              }
+            },
+            y1: {
+              type: 'linear',
+              display: true,
+              position: 'right',
+              title: {
+                display: true,
+                text: 'Margem EBITDA (%)',
+                font: {
+                  size: window.innerWidth <= 768 ? 10 : 12
+                }
+              },
+              ticks: {
+                font: {
+                  size: window.innerWidth <= 768 ? 9 : 11
+                }
+              },
+              grid: {
+                drawOnChartArea: false,
+              },
+            },
+            x: {
+              ticks: {
+                font: {
+                  size: window.innerWidth <= 768 ? 9 : 11
+                }
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                font: { 
+                  size: window.innerWidth <= 768 ? 9 : 12,
+                  weight: 'normal'
+                },
+                boxWidth: window.innerWidth <= 768 ? 10 : 15,
+                padding: window.innerWidth <= 768 ? 6 : 10
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  var label = context.dataset.label || '';
+                  var value = context.parsed.y || 0;
+                  if(context.datasetIndex === 0) {
+                    return label + ': R$ ' + value.toFixed(2) + ' milhões';
+                  } else {
+                    return label + ': ' + value.toFixed(2) + '%';
+                  }
+                }
+              }
+            },
+            title: {
+              display: false
+            }
+          }
+        }
+      });
+    }
+    
+    function updateRevenueChart(yearsData){
+      if(!revenueChart) {
+        initRevenueChart();
+        if(!revenueChart) return;
+      }
+      
+      var labels = [];
+      var revenueData = [];
+      var ebitdaMarginData = [];
+      
+      // Filtrar anos entre 2026 e 2040
+      for(var i = 0; i < yearsData.length; i++){
+        var year = yearsData[i].year;
+        if(year >= 2026 && year <= 2040){
+          labels.push(year);
+          var revenueMi = yearsData[i].revenueMi || 0;
+          var ebitdaMi = yearsData[i].ebitdaMi || 0;
+          revenueData.push(revenueMi);
+          // Calcular margem EBITDA (%)
+          var margin = revenueMi > 0 ? (ebitdaMi / revenueMi) * 100 : 0;
+          ebitdaMarginData.push(margin);
+        }
+      }
+      
+      // Preencher anos faltantes com 0
+      for(var y = 2026; y <= 2040; y++){
+        if(labels.indexOf(y) === -1){
+          labels.push(y);
+          revenueData.push(0);
+          ebitdaMarginData.push(null);
+        }
+      }
+      
+      revenueChart.data.labels = labels;
+      revenueChart.data.datasets[0].data = revenueData;
+      revenueChart.data.datasets[1].data = ebitdaMarginData;
+      revenueChart.update();
+    }
+
+    // Gráfico de FCFE Acumulado
+    var fcfeChart = null;
+    
+    function initFcfeChart(){
+      var ctx = document.getElementById('fcfeChart');
+      if(!ctx) return;
+      
+      fcfeChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: [],
+          datasets: [
+            {
+              label: 'FCFE Acumulado (R$ mi)',
+              data: [],
+              backgroundColor: 'rgba(75, 192, 192, 0.8)',
+              datalabels: {
+                anchor: 'end',
+                align: 'top',
+                color: '#000',
+                font: {
+                  size: window.innerWidth <= 768 ? 9 : 11
+                },
+                formatter: function(value) {
+                  if(value !== null && value !== undefined && value !== 0) {
+                    return value.toFixed(1);
+                  }
+                  return '';
+                }
+              }
+            }
+          ]
+        },
+        plugins: [window.ChartDataLabels || ChartDataLabels],
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'FCFE Acumulado (R$ milhões)',
+                font: {
+                  size: window.innerWidth <= 768 ? 10 : 12
+                }
+              },
+              ticks: {
+                font: {
+                  size: window.innerWidth <= 768 ? 9 : 11
+                }
+              }
+            },
+            x: {
+              ticks: {
+                font: {
+                  size: window.innerWidth <= 768 ? 9 : 11
+                }
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                font: { 
+                  size: window.innerWidth <= 768 ? 9 : 12,
+                  weight: 'normal'
+                },
+                boxWidth: window.innerWidth <= 768 ? 10 : 15,
+                padding: window.innerWidth <= 768 ? 6 : 10
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  var label = context.dataset.label || '';
+                  var value = context.parsed.y || 0;
+                  return label + ': R$ ' + value.toFixed(2) + ' milhões';
+                }
+              }
+            },
+            title: {
+              display: false
+            }
+          }
+        }
+      });
+    }
+    
+    function updateFcfeChart(yearsData){
+      if(!fcfeChart) {
+        initFcfeChart();
+        if(!fcfeChart) return;
+      }
+      
+      var labels = [];
+      var fcfeAccumulatedData = [];
+      var accumulatedFcfe = 0;
+      
+      // Filtrar anos entre 2026 e 2040 e calcular FCFE acumulado
+      for(var i = 0; i < yearsData.length; i++){
+        var year = yearsData[i].year;
+        if(year >= 2026 && year <= 2040){
+          labels.push(year);
+          var fcfeMi = yearsData[i].fcfeMi || 0;
+          accumulatedFcfe += fcfeMi;
+          fcfeAccumulatedData.push(accumulatedFcfe);
+        }
+      }
+      
+      // Preencher anos faltantes com o último valor acumulado
+      var lastValue = fcfeAccumulatedData.length > 0 ? fcfeAccumulatedData[fcfeAccumulatedData.length - 1] : 0;
+      for(var y = 2026; y <= 2040; y++){
+        if(labels.indexOf(y) === -1){
+          labels.push(y);
+          fcfeAccumulatedData.push(lastValue);
+        }
+      }
+      
+      fcfeChart.data.labels = labels;
+      fcfeChart.data.datasets[0].data = fcfeAccumulatedData;
+      fcfeChart.update();
+    }
+
     // Variável para armazenar altura fixa dos cards em mobile
     var fixedKpiHeight = null;
     
@@ -2755,6 +3180,14 @@
           reservesChart.resize();
           reservesChart.update('none'); // Atualizar sem animação para recalcular datalabels
         }
+        if(revenueChart){
+          revenueChart.resize();
+          revenueChart.update('none');
+        }
+        if(fcfeChart){
+          fcfeChart.resize();
+          fcfeChart.update('none');
+        }
         // Não chamar equalizeKpiHeights aqui para evitar crescimento incremental
       }, 250);
     });
@@ -2787,10 +3220,14 @@
     // ResizeObserver para redimensionar gráficos quando o container mudar
     var volumeResizeObserver = null;
     var reservesResizeObserver = null;
+    var revenueResizeObserver = null;
+    var fcfeResizeObserver = null;
     
     function setupChartResizeObservers(){
       var volumeContainer = document.getElementById('volumeChartContainer');
       var reservesContainer = document.getElementById('reservesChartContainer');
+      var revenueContainer = document.getElementById('revenueChartContainer');
+      var fcfeContainer = document.getElementById('fcfeChartContainer');
       
       // Limpar observadores anteriores se existirem
       if(volumeResizeObserver){
@@ -2798,6 +3235,12 @@
       }
       if(reservesResizeObserver){
         reservesResizeObserver.disconnect();
+      }
+      if(revenueResizeObserver){
+        revenueResizeObserver.disconnect();
+      }
+      if(fcfeResizeObserver){
+        fcfeResizeObserver.disconnect();
       }
       
       if(volumeContainer && volumeChart){
@@ -2825,6 +3268,30 @@
         });
         reservesResizeObserver.observe(reservesContainer);
       }
+      
+      if(revenueContainer && revenueChart){
+        revenueResizeObserver = new ResizeObserver(function(entries){
+          if(revenueChart){
+            requestAnimationFrame(function(){
+              revenueChart.resize();
+              revenueChart.update('none');
+            });
+          }
+        });
+        revenueResizeObserver.observe(revenueContainer);
+      }
+      
+      if(fcfeContainer && fcfeChart){
+        fcfeResizeObserver = new ResizeObserver(function(entries){
+          if(fcfeChart){
+            requestAnimationFrame(function(){
+              fcfeChart.resize();
+              fcfeChart.update('none');
+            });
+          }
+        });
+        fcfeResizeObserver.observe(fcfeContainer);
+      }
     }
 
     // Init
@@ -2832,6 +3299,8 @@
       bindInputs();
       initVolumeChart();
       initReservesChart();
+      initRevenueChart();
+      initFcfeChart();
       recalcC1(); recalcC2();
       // Configurar ResizeObserver após inicialização dos gráficos
       setTimeout(setupChartResizeObservers, 100);
@@ -2839,4 +3308,3 @@
   </script>
 </body>
 </html>
-
