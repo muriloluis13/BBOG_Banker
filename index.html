@@ -15,6 +15,574 @@
     .tabs { display:inline-flex; border:1px solid var(--bd); border-radius: 14px; overflow:hidden; margin: 16px 0 20px; background:#fff; }
     .tabbtn { padding:10px 14px; font-size: 13px; border:0; background:#fff; color:#374151; cursor:pointer; }
     .tabbtn.active { background: var(--accent); color:#fff; }
+    /* Bento Grid */
+    .bento-grid { 
+      display: grid; 
+      grid-template-columns: repeat(3, 1fr); 
+      gap: 16px; 
+      margin: 20px 0; 
+    }
+    .bento-card { 
+      background: var(--card); 
+      border: 1px solid var(--bd); 
+      border-radius: 14px; 
+      padding: 20px; 
+      min-height: 200px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    /* Cores pastéis para os cards */
+    .bento-card.overview-card { background: #f8fcff; } /* Overview - azul muito claro */
+    .bento-card.arquivos-card { background: #fefbf3; } /* Arquivos - amarelo muito claro */
+    .bento-card.regulatorias-card { background: #fef7fb; } /* Informações regulatórias - rosa muito claro */
+    .bento-card.societarias-card { background: #f7f5ff; } /* Informações societárias - roxo muito claro */
+    .bento-card.comerciais-card { background: #f5fdf8; } /* Informações comerciais - verde muito claro */
+    .bento-card.financeiras-card { background: #fefbf3; } /* Informações financeiras - amarelo muito claro */
+    .bento-card.tecnicas-card { background: #fef7fb; } /* Informações técnicas - rosa muito claro */
+    .bento-card.timeline-card { background: #f8fcff; } /* Timeline - azul celeste muito claro */
+    .bento-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .bento-card h3 { 
+      font-size: 16px; 
+      margin: 0 0 12px; 
+      font-weight: 600; 
+      color: var(--text);
+      border-bottom: 2px solid var(--bd);
+      padding-bottom: 8px;
+    }
+    .bento-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--bd);
+      min-height: 44px; /* Área de toque mínima para mobile */
+      -webkit-tap-highlight-color: transparent;
+    }
+    .bento-card-header h3 {
+      margin: 0;
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .bento-card-toggle {
+      font-size: 16px;
+      color: var(--text);
+      transition: transform 0.3s ease;
+      line-height: 1;
+    }
+    .bento-card.collapsed .bento-card-toggle {
+      transform: rotate(-90deg);
+    }
+    .bento-card-content {
+      overflow: hidden;
+      transition: max-height 0.3s ease, opacity 0.3s ease;
+      max-height: 5000px;
+      opacity: 1;
+    }
+    .bento-card.collapsed .bento-card-content {
+      max-height: 0;
+      opacity: 0;
+      margin-top: 0;
+    }
+    .bento-card.large { 
+      grid-column: span 2; 
+    }
+    .bento-card.tall { 
+      grid-row: span 2; 
+      min-height: 400px; 
+    }
+    .info-content {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .entity-section {
+      margin-top: 4px;
+      padding-top: 6px;
+      border-top: 1px solid var(--bd);
+    }
+    .entity-section h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 0 0 16px 0;
+    }
+    .entity-item {
+      margin-bottom: 20px;
+      padding: 12px;
+      background: #f9fafb;
+      border-radius: 8px;
+      border-left: 3px solid #1e3a5f;
+    }
+    .entity-item:last-child {
+      margin-bottom: 0;
+    }
+    .entity-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      min-height: 44px; /* Área de toque mínima para mobile */
+      -webkit-tap-highlight-color: transparent;
+    }
+    .entity-item h5 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1e3a5f;
+      margin: 0;
+    }
+    .entity-toggle {
+      font-size: 16px;
+      color: #1e3a5f;
+      transition: transform 0.3s ease;
+      line-height: 1;
+    }
+    .entity-item.collapsed .entity-toggle {
+      transform: rotate(-90deg);
+    }
+    .entity-content {
+      margin-top: 8px;
+      overflow: hidden;
+      transition: max-height 0.3s ease, opacity 0.3s ease;
+      max-height: 1000px;
+      opacity: 1;
+    }
+    .entity-item.collapsed .entity-content {
+      max-height: 0;
+      opacity: 0;
+      margin-top: 0;
+    }
+    .entity-item p {
+      font-size: 12px;
+      color: var(--muted);
+      margin: 4px 0;
+      line-height: 1.5;
+    }
+    .entity-item .entity-label {
+      font-weight: 500;
+      color: var(--text);
+    }
+    /* Timeline */
+    .timeline {
+      position: relative;
+      padding: 0 0 0 60px;
+    }
+    .timeline-item {
+      position: relative;
+      padding-left: 20px;
+      padding-bottom: 20px;
+      border-left: 2px solid var(--bd);
+    }
+    .timeline-item:last-child {
+      border-left: none;
+      padding-bottom: 0;
+    }
+    .timeline-year {
+      position: absolute;
+      left: -55px;
+      top: 0;
+      background: var(--card);
+      border: 2px solid #1e3a5f;
+      border-radius: 12px;
+      width: auto;
+      min-width: 50px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 600;
+      color: #1e3a5f;
+      z-index: 1;
+      white-space: nowrap;
+      padding: 0 8px;
+    }
+    .timeline-year[style*="Jun/25"],
+    .timeline-year[style*="Dez/25"] {
+      width: auto;
+      min-width: 40px;
+      height: 24px;
+      border-radius: 12px;
+      padding: 0 6px;
+      font-size: 9px;
+      left: -20px;
+    }
+    .timeline-content {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-top: 2px;
+    }
+    .timeline-item:last-child .timeline-year {
+      border-color: #f97316;
+      background: #f97316;
+      color: #fff;
+    }
+    /* Shareholders Structure Diagram */
+    .shareholders-diagram {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 0 0 0;
+      position: relative;
+      min-height: 300px;
+      margin-bottom: 0;
+    }
+    .diagram-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1e3a5f;
+      margin-bottom: 24px;
+      text-align: center;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #1e3a5f;
+      width: 100%;
+    }
+    .shareholders-top {
+      display: flex;
+      gap: 40px;
+      margin-bottom: 80px;
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      justify-content: center;
+    }
+    .shareholder-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      flex: 1;
+      min-width: 0;
+    }
+    .shareholder-box {
+      background: #1e3a5f;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      min-width: 130px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    .shareholder-percentage {
+      color: #6b7280;
+      font-size: 13px;
+      text-align: center;
+      margin-top: 8px;
+      position: relative;
+      z-index: 2;
+    }
+    .shareholder-line {
+      position: absolute;
+      width: 2px;
+      background: #9ca3af;
+      z-index: 1;
+      top: 100%;
+      left: 50%;
+      transform-origin: top center;
+    }
+    .shareholder-item:first-child .shareholder-line {
+      height: 120px;
+      transform: translateX(-50%) rotate(-20deg);
+    }
+    .shareholder-item:last-child .shareholder-line {
+      height: 120px;
+      transform: translateX(-50%) rotate(20deg);
+    }
+    .company-box {
+      background: #f97316;
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      min-width: 200px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+    @media(max-width: 1024px) {
+      .bento-grid { 
+        grid-template-columns: repeat(2, 1fr); 
+      }
+      .bento-card.large { 
+        grid-column: span 2; 
+      }
+    }
+    @media(max-width: 768px) {
+      .bento-grid { 
+        grid-template-columns: 1fr; 
+        gap: 12px;
+        margin: 16px 0;
+      }
+      .bento-card.large, .bento-card.tall { 
+        grid-column: span 1; 
+        grid-row: span 1; 
+      }
+      .bento-card {
+        padding: 16px;
+        min-height: auto;
+      }
+      .bento-card h3 {
+        font-size: 14px;
+        margin-bottom: 10px;
+        padding-bottom: 6px;
+      }
+      .bento-card-header {
+        padding-bottom: 6px;
+        margin-bottom: 10px;
+      }
+      .bento-card-header h3 {
+        font-size: 14px;
+      }
+      .info-content {
+        font-size: 12px;
+      }
+      /* Timeline mobile */
+      .timeline {
+        padding: 0 0 0 50px;
+      }
+      .timeline-item {
+        padding-left: 15px;
+        padding-bottom: 16px;
+      }
+      .timeline-year {
+        left: -45px;
+        min-width: 45px;
+        height: 22px;
+        font-size: 9px;
+        padding: 0 6px;
+      }
+      .timeline-year[style*="Jun/25"],
+      .timeline-year[style*="Dez/25"] {
+        min-width: 50px;
+        font-size: 8px;
+        left: -50px;
+      }
+      .timeline-content {
+        font-size: 11px;
+        line-height: 1.4;
+      }
+      /* Shareholders diagram mobile */
+      .shareholders-diagram {
+        padding: 15px 0;
+        min-height: auto;
+        width: 100%;
+      }
+      .shareholders-top {
+        gap: 12px;
+        flex-direction: row;
+        margin-bottom: 60px;
+        max-width: 100%;
+        justify-content: center;
+        flex-wrap: nowrap;
+        width: 100%;
+      }
+      .shareholder-item {
+        flex: 1;
+        min-width: 0;
+        max-width: calc(50% - 6px);
+      }
+      .shareholder-box {
+        min-width: 0;
+        width: 100%;
+        max-width: 100%;
+        padding: 10px 8px;
+        font-size: 11px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+      .shareholder-percentage {
+        font-size: 11px;
+        margin-top: 6px;
+      }
+      .shareholder-line {
+        width: 2px;
+        height: 50px;
+        margin-top: 6px;
+      }
+      .shareholder-item:first-child .shareholder-line {
+        height: 50px;
+        transform: translateX(-50%) rotate(-15deg);
+      }
+      .shareholder-item:last-child .shareholder-line {
+        height: 50px;
+        transform: translateX(-50%) rotate(15deg);
+      }
+      .company-box {
+        min-width: 0;
+        width: auto;
+        max-width: 90%;
+        padding: 12px 14px;
+        font-size: 11px;
+        margin: 0 auto;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+      /* Entity items mobile */
+      .entity-section {
+        margin-top: 8px;
+        padding-top: 10px;
+      }
+      .entity-section h4 {
+        font-size: 13px;
+        margin-bottom: 12px;
+      }
+      .entity-item {
+        padding: 10px;
+        margin-bottom: 16px;
+      }
+      .entity-item h5 {
+        font-size: 12px;
+      }
+      .entity-item p {
+        font-size: 11px;
+        margin: 3px 0;
+        line-height: 1.4;
+      }
+      .entity-item ul {
+        font-size: 11px;
+        margin-left: 16px;
+      }
+      /* File links mobile */
+      .info-content a {
+        padding: 10px 8px;
+        font-size: 11px;
+        min-height: 48px; /* Área de toque mínima para mobile */
+        display: flex;
+        align-items: center;
+        -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+      }
+      .info-content a span:first-child {
+        font-size: 16px;
+        margin-right: 8px;
+      }
+      .info-content a span:last-child {
+        font-size: 11px;
+      }
+      /* Images mobile */
+      .info-content img {
+        border-radius: 6px;
+      }
+    }
+    @media(max-width: 480px) {
+      .bento-grid {
+        gap: 10px;
+        margin: 12px 0;
+      }
+      .bento-card {
+        padding: 12px;
+        border-radius: 12px;
+      }
+      .bento-card h3 {
+        font-size: 13px;
+        margin-bottom: 8px;
+        padding-bottom: 6px;
+      }
+      .bento-card-header h3 {
+        font-size: 13px;
+      }
+      .info-content {
+        font-size: 11px;
+      }
+      /* Timeline mobile pequeno */
+      .timeline {
+        padding: 0 0 0 45px;
+      }
+      .timeline-item {
+        padding-left: 12px;
+        padding-bottom: 14px;
+      }
+      .timeline-year {
+        left: -40px;
+        min-width: 40px;
+        height: 20px;
+        font-size: 8px;
+        padding: 0 5px;
+      }
+      .timeline-year[style*="Jun/25"],
+      .timeline-year[style*="Dez/25"] {
+        min-width: 45px;
+        font-size: 7px;
+        left: -45px;
+      }
+      .timeline-content {
+        font-size: 10px;
+        line-height: 1.3;
+      }
+      /* Shareholders diagram mobile pequeno */
+      .shareholders-top {
+        gap: 10px;
+        margin-bottom: 50px;
+        flex-direction: row;
+        justify-content: center;
+      }
+      .shareholder-item {
+        max-width: calc(50% - 5px);
+      }
+      .shareholder-box {
+        min-width: 0;
+        width: 100%;
+        padding: 8px 6px;
+        font-size: 10px;
+      }
+      .shareholder-percentage {
+        font-size: 10px;
+        margin-top: 4px;
+      }
+      .shareholder-line {
+        height: 45px;
+      }
+      .shareholder-item:first-child .shareholder-line,
+      .shareholder-item:last-child .shareholder-line {
+        height: 45px;
+      }
+      .company-box {
+        min-width: 0;
+        width: auto;
+        max-width: 85%;
+        padding: 10px 12px;
+        font-size: 10px;
+      }
+      /* Entity items mobile pequeno */
+      .entity-item {
+        padding: 8px;
+        margin-bottom: 12px;
+      }
+      .entity-item h5 {
+        font-size: 11px;
+      }
+      .entity-item p {
+        font-size: 10px;
+        margin: 2px 0;
+      }
+      .entity-item ul {
+        font-size: 10px;
+        margin-left: 14px;
+      }
+      /* File links mobile pequeno */
+      .info-content a {
+        padding: 10px 8px;
+        font-size: 10px;
+        flex-wrap: wrap;
+      }
+      .info-content a span:nth-child(2) {
+        width: 100%;
+        margin-top: 4px;
+        font-size: 10px;
+      }
+    }
     .grid { display:grid; grid-gap: 16px; }
     @media(min-width: 1024px){ .grid-3 { grid-template-columns: 1fr 2fr; } }
     .card { background: var(--card); border:1px solid var(--bd); border-radius: 14px; padding: 16px; }
@@ -141,6 +709,54 @@
     }
     .hidden { display:none; }
     .btn { padding: 8px 12px; border:1px solid var(--bd); border-radius: 12px; background:#fff; cursor:pointer; }
+    /* Image Modal/Lightbox */
+    .image-modal {
+      display: none;
+      position: fixed;
+      z-index: 10000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      cursor: pointer;
+    }
+    .image-modal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .image-modal-content {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+    .image-modal-close {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      color: #fff;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 10001;
+      line-height: 1;
+    }
+    .image-modal-close:hover {
+      opacity: 0.7;
+    }
+    .info-content img {
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .info-content img:hover {
+      opacity: 0.9;
+    }
+    .info-content a:hover {
+      background: #e5e7eb !important;
+    }
   </style>
 </head>
 <body>
@@ -154,12 +770,213 @@
     </div>
 
     <div class="tabs">
-      <button class="tabbtn active" id="tab-venda" type="button">Cenário 1 — Venda de gás</button>
-      <button class="tabbtn" id="tab-liq" type="button">Cenário 2 — Liquefação no campo</button>
+      <button class="tabbtn active" id="tab-info-gerais" type="button">Informações gerais</button>
+      <button class="tabbtn" id="tab-venda" type="button">Cenário 1 — Venda de gás</button>
+    </div>
+
+    <!-- Informações gerais -->
+    <div id="view-info-gerais">
+      <div class="bento-grid">
+        <div class="bento-card large overview-card">
+          <h3>Overview</h3>
+          <div class="info-content">
+            <!-- Conteúdo será adicionado futuramente -->
+          </div>
+        </div>
+        <div class="bento-card arquivos-card">
+          <h3>Arquivos</h3>
+          <div class="info-content">
+            <div style="margin-top: 12px;">
+              <div style="margin-bottom: 12px;">
+                <a href="Project Belenus - CIM vSent (Lorinvest).pdf" download style="display: flex; align-items: center; padding: 10px; background: #f9fafb; border-radius: 8px; border: 1px solid var(--bd); text-decoration: none; color: var(--text); transition: background 0.2s;">
+                  <span style="font-size: 18px; margin-right: 10px;">📄</span>
+                  <span style="font-size: 12px; flex: 1;">Project Belenus - CIM vSent (Lorinvest).pdf</span>
+                  <span style="font-size: 12px; color: var(--muted);">⬇</span>
+                </a>
+              </div>
+              <div style="margin-bottom: 12px;">
+                <a href="Project Belenus - Process Letter 1st Phase vSent (Lorinvest).pdf" download style="display: flex; align-items: center; padding: 10px; background: #f9fafb; border-radius: 8px; border: 1px solid var(--bd); text-decoration: none; color: var(--text); transition: background 0.2s;">
+                  <span style="font-size: 18px; margin-right: 10px;">📄</span>
+                  <span style="font-size: 12px; flex: 1;">Project Belenus - Process Letter 1st Phase vSent (Lorinvest).pdf</span>
+                  <span style="font-size: 12px; color: var(--muted);">⬇</span>
+                </a>
+              </div>
+              <div>
+                <a href="Project Belenus_Financial Model_vSent (Lorinvest).xlsx" download style="display: flex; align-items: center; padding: 10px; background: #f9fafb; border-radius: 8px; border: 1px solid var(--bd); text-decoration: none; color: var(--text); transition: background 0.2s;">
+                  <span style="font-size: 18px; margin-right: 10px;">📊</span>
+                  <span style="font-size: 12px; flex: 1;">Project Belenus_Financial Model_vSent (Lorinvest).xlsx</span>
+                  <span style="font-size: 12px; color: var(--muted);">⬇</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bento-card regulatorias-card">
+          <h3>Informações regulatórias</h3>
+          <div class="info-content">
+            <!-- Conteúdo será adicionado futuramente -->
+          </div>
+        </div>
+        <div class="bento-card societarias-card">
+          <h3>Informações societárias</h3>
+          <div class="info-content">
+            <div class="shareholders-diagram">
+              <div class="shareholders-top">
+                <div class="shareholder-item">
+                  <div class="shareholder-box">FIP Pirineus</div>
+                  <div class="shareholder-percentage">75%</div>
+                  <div class="shareholder-line"></div>
+                </div>
+                <div class="shareholder-item">
+                  <div class="shareholder-box">EPG Brasil</div>
+                  <div class="shareholder-percentage">25%</div>
+                  <div class="shareholder-line"></div>
+                </div>
+              </div>
+              <div class="company-box">Barra Bonita Óleo e Gás</div>
+            </div>
+            
+            <div class="entity-section">
+              <h4>Dados das Entidades</h4>
+              
+              <div class="entity-item collapsed">
+                <div class="entity-header">
+                  <h5>FIP Pirineus</h5>
+                  <span class="entity-toggle">▼</span>
+                </div>
+                <div class="entity-content">
+                  <p><span class="entity-label">Tipo:</span> Fundo de Investimento em Participações</p>
+                  <p><span class="entity-label">Participação:</span> 75%</p>
+                  <p><span class="entity-label">CNPJ:</span> 21.163.276/0001-60</p>
+                  <p><span class="entity-label">Cotistas:</span> 5</p>
+                  <p><span class="entity-label">Patrimônio:</span> R$ 524,2 mi.</p>
+                  <p><span class="entity-label">Gestor:</span> 4UM Gestão de Recursos</p>
+                  <p><span class="entity-label">Empresas no portfolio:</span> 13</p>
+                  <p><span class="entity-label">Valor da BBOG na carteira (Julho/2025):</span> R$ 19,2 mi.</p>
+                  <p><span class="entity-label">Maior investimento:</span> Eólica Pindaí.</p>
+                </div>
+              </div>
+              
+              <div class="entity-item collapsed">
+                <div class="entity-header">
+                  <h5>EPG Brasil Ltda.</h5>
+                  <span class="entity-toggle">▼</span>
+                </div>
+                <div class="entity-content">
+                  <p><span class="entity-label">Tipo:</span> Sociedade Limitada</p>
+                  <p><span class="entity-label">Participação:</span> 25%</p>
+                  <p><span class="entity-label">CNPJ:</span> 11.210.501/0001-19</p>
+                  <p><span class="entity-label">Capital Social:</span> R$ 10,0 mi</p>
+                  <p><span class="entity-label">Sócios:</span></p>
+                  <ul style="margin: 4px 0 0 20px; padding: 0; font-size: 12px; color: var(--muted); line-height: 1.6;">
+                    <li>Cleber Bahia Silva Junior</li>
+                    <li>Engepet - Empresa de Engenharia de Petroleo Ltda</li>
+                    <li>Homero Pessoa Pinto</li>
+                    <li>João Ricardo Maia de Magalhães</li>
+                    <li>Pericia Engenharia e Construcao Ltda</li>
+                  </ul>
+                  <p><span class="entity-label">Sede:</span> Aracaju/SE</p>
+                </div>
+              </div>
+              
+              <div class="entity-item collapsed">
+                <div class="entity-header">
+                  <h5>Barra Bonita Óleo e Gás S.A.</h5>
+                  <span class="entity-toggle">▼</span>
+                </div>
+                <div class="entity-content">
+                  <p><span class="entity-label">Tipo:</span> Sociedade Anônima</p>
+                  <p><span class="entity-label">Participação:</span> Controlada</p>
+                  <p><span class="entity-label">CNPJ:</span> 22.881.417/0001-43</p>
+                  <p><span class="entity-label">Capital Social:</span> R$ 10,8 mi.</p>
+                  <p><span class="entity-label">Administradores:</span></p>
+                  <ul style="margin: 4px 0 0 20px; padding: 0; font-size: 12px; color: var(--muted); line-height: 1.6;">
+                    <li>Cleber Bahia Silva Junior</li>
+                    <li>Guilherme Rocha Ávila</li>
+                    <li>Henrique Grossman</li>
+                    <li>João Ricardo Maia de Magalhães</li>
+                  </ul>
+                  <p><span class="entity-label">Sede:</span> Curitiba/PR. 2 Filiais em Pitanga/PR.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bento-card comerciais-card">
+          <h3>Informações comerciais</h3>
+          <div class="info-content">
+            <!-- Conteúdo será adicionado futuramente -->
+          </div>
+        </div>
+        <div class="bento-card financeiras-card">
+          <h3>Informações financeiras</h3>
+          <div class="info-content">
+            <!-- Conteúdo será adicionado futuramente -->
+          </div>
+        </div>
+        <div class="bento-card collapsed tecnicas-card">
+          <div class="bento-card-header">
+            <h3>Informações técnicas</h3>
+            <span class="bento-card-toggle">▼</span>
+          </div>
+          <div class="bento-card-content">
+            <div class="info-content">
+              <div style="margin-top: 12px;">
+                <img src="reserves.png" alt="Reserves - Reservas" class="zoomable-image" style="width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--bd); display: block; margin-bottom: 16px;" />
+                <img src="geologyview.png" alt="Geology View - Seção geológica estrutural da Bacia do Paraná" class="zoomable-image" style="width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--bd); display: block; margin-bottom: 16px;" />
+                <img src="geologyoutlook.png" alt="Geology Outlook - Perspectiva geológica" class="zoomable-image" style="width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--bd); display: block;" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bento-card large timeline-card">
+          <h3>Timeline</h3>
+          <div class="info-content">
+            <div class="timeline">
+              <div class="timeline-item">
+                <div class="timeline-year">2015</div>
+                <div class="timeline-content">Autorização do projeto pelo CNPE por meio da Resolução nº 1/2015</div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-year">2016</div>
+                <div class="timeline-content">Pagamento do bônus e assinatura do contrato de concessão</div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-year">2017</div>
+                <div class="timeline-content">Início do processo de licenciamento ambiental – Termo de Referência do IAT</div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-year">2021</div>
+                <div class="timeline-content">UTE Barra Bonita vence o leilão emergencial de energia PCS 01</div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-year">2022</div>
+                <div class="timeline-content">ANP aprova o plano de desenvolvimento e declara a viabilidade comercial do campo de gás<br>UTE Barra Bonita inicia a operação comercial</div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-year">2023</div>
+                <div class="timeline-content">GSA assinado com GNLink</div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-year">2024</div>
+                <div class="timeline-content">Início da operação comercial no escopo do GSA</div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-year" style="font-size: 9px; padding: 0 2px;">Jun/25</div>
+                <div class="timeline-content">Publicação do relatório de certificação de reservas</div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-year" style="font-size: 9px; padding: 0 2px;">Dez/25</div>
+                <div class="timeline-content">Conclusão do suprimento da UTE Barra Bonita no âmbito do PCS 01</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Cenário 1 -->
-    <div id="view-venda">
+    <div id="view-venda" class="hidden">
       <div class="grid grid-3 scenario-layout">
         <section class="grid scenario-outputs">
           <div class="kpis">
@@ -323,210 +1140,10 @@
         </section>
       </div>
       <div class="note">Notas: (i) preços em US$/MMBtu derivados do Brent (%); (ii) receita bruta = volume × preço / (1 - 9,25% gross-up PIS/COFINS); (iii) receita líquida = receita bruta - tributos sobre faturamento (10,65% em lucro presumido ou 16,25% em lucro real, conforme receita bruta do ano anterior > R$ 78 milhões); (iv) royalties 5,5% da receita bruta; (v) tributos sobre lucro: lucro real = 34% sobre EBT; lucro presumido = 3,08% da receita bruta (IRPJ: 2% + CSLL: 1,08%); (vi) NPV em R$ milhões; (vii) produção limitada a <span id="c1_reserves_note">470,00</span> MMm³; (viii) COGS base de R$ 2.463.662,60/ano, atualizado anualmente em janeiro, proporcional à fração do ano; (ix) SG&A base de R$ 2.301.987,22/ano, atualizado anualmente em janeiro, proporcional à fração do ano; (x) Preço base de R$ 2,3608/m³, atualizado anualmente em junho; (xi) Leasing de R$ 3,6 milhões/ano (despesa financeira), proporcional à fração do ano; (xii) Maintenance CapEx de 0,5% da receita bruta; (xiii) EBITDA = Receita líquida - Royalties - COGS - SG&A; (xiv) EBT = EBITDA - Leasing; (xv) corte econômico: produção finaliza se lucro líquido mensal < R$ 500 mil (base 2026), ajustado pela inflação anualmente em janeiro.</div>
-    </div>
-
-    <!-- Cenário 2 -->
-    <div id="view-liq" class="hidden">
-      <div class="grid grid-3 scenario-layout">
-        <section class="grid scenario-outputs">
-          <div class="kpis">
-            <div class="kpi kpi-lor-ice" data-kpi-order="1">
-              <div class="cap">NPV (@Ke) — desalav. / alav.</div>
-              <div class="val multi">
-                <span>Desalav.: R$ <span id="c2_npv_unlev">0,00</span> mi</span>
-                <span>Alav.: R$ <span id="c2_npv_lev">0,00</span> mi</span>
-              </div>
-            </div>
-            <div class="kpi kpi-lor-celeste" data-kpi-order="2">
-              <div class="cap">Volume médio do modelo</div>
-              <div class="val"><span id="c2_volmed">0</span> mil m³/dia</div>
-            </div>
-            <div class="kpi kpi-lor-sand" data-kpi-order="3">
-              <div class="cap">Reservas consumidas</div>
-              <div class="val"><span id="c2_res">0,00</span> mi m³</div>
-            </div>
-            <div class="kpi kpi-lor-blush" data-kpi-order="4">
-              <div class="cap">Último ano de operação</div>
-              <div class="val"><span id="c2_lastyear">—</span></div>
-            </div>
-            <div class="kpi priceBox kpi-lor-sage" data-kpi-order="5">
-              <div class="cap">Preço médio do modelo</div>
-              <div class="val"><span id="c2_price_pct">0,0</span>% do Brent</div>
-              <div class="sub">US$ <span id="c2_price_usd">0,00</span> / MMBtu</div>
-              <div class="sub">R$ <span id="c2_price_brl">0,00</span> / m³</div>
-            </div>
-            <div class="kpi kpi-lor-sage" data-kpi-order="6">
-              <div class="cap">Margem EBITDA média</div>
-              <div class="val"><span id="c2_ebitda_margin">—</span></div>
-            </div>
-            <div class="kpi kpi-lor-stone" data-kpi-order="7">
-              <div class="cap">TIR (desalav. / alav.)</div>
-              <div class="val"><span id="c2_irr_unlev">—</span> / <span id="c2_irr_lev">—</span></div>
-            </div>
-            <div class="kpi kpi-lor-ice" data-kpi-order="8">
-              <div class="cap">EV/EBITDA implícito</div>
-              <div class="val"><span id="c2_ev_ebitda">—</span></div>
-              <div class="sub" style="font-size: 11px; color: var(--muted); margin-top:4px;">NPV / PV EBITDA 2028</div>
-            </div>
-          </div>
-        </section>
-
-        <section class="card scenario-premissas">
-          <h2>Premissas — Cenário 2 (Liquefação)</h2>
-
-          <div class="row">
-            <label><span>Reservas consumidas</span><span><span id="c2_reserves_lbl">992,12</span> MMm³</span></label>
-            <select id="c2_reserves" style="width:100%; padding:8px; border:1px solid var(--bd); border-radius:8px; font-size:13px;">
-              <option value="241.04">1P: 241,04 MMm³</option>
-              <option value="362.31">1P+1C: 362,31 MMm³</option>
-              <option value="576.70">1P+2C: 576,70 MMm³</option>
-              <option value="992.12" selected>1P+3C: 992,12 MMm³</option>
-            </select>
-          </div>
-
-          <div class="row">
-            <label><span>Taxa de decaimento anual de reservas</span><span><input type="checkbox" id="c2_decay_on" style="margin-left:8px;"></span></label>
-          </div>
-
-          <div id="c2_decay_box" style="opacity:.55;pointer-events:none;">
-            <div class="row">
-              <label><span>Taxa de decaimento</span><span><span id="c2_decay_lbl">5.00</span>% a.a.</span></label>
-              <input type="range" id="c2_decay" min="0" max="50" step="0.01" value="5">
-            </div>
-          </div>
-
-          <div class="row">
-            <label><span>Curva de volume</span><span><span id="c2_curve_lbl">Full</span></span></label>
-            <select id="c2_curve" style="width:100%; padding:8px; border:1px solid var(--bd); border-radius:8px; font-size:13px;">
-              <option value="qdc">QDC</option>
-              <option value="3maq">3 máquinas</option>
-              <option value="qdcqdca">QDC + QDCA</option>
-              <option value="full" selected>Full</option>
-            </select>
-          </div>
-
-          <div class="row">
-            <label><span id="c2_prod_label">Produção no cenário Full</span><span><span id="c2_prod_lbl">150</span> mil m³/dia</span></label>
-            <input type="range" id="c2_prod" min="0" max="150" step="1" value="150">
-          </div>
-
-          <div class="row">
-            <label><span>Modelo</span><span><span id="c2_model_lbl">Nominal</span></span></label>
-            <select id="c2_model" style="width:100%; padding:8px; border:1px solid var(--bd); border-radius:8px; font-size:13px;">
-              <option value="nominal" selected>Nominal</option>
-              <option value="real">Real</option>
-            </select>
-          </div>
-
-          <div class="row">
-            <label><span>Cenário de preço</span><span><span id="c2_price_scenario_lbl">Default</span></span></label>
-            <select id="c2_price_scenario" style="width:100%; padding:8px; border:1px solid var(--bd); border-radius:8px; font-size:13px;">
-              <option value="default" selected>Default (R$ 2,3608/m³)</option>
-              <option value="renegociado">Renegociado (R$ 1,90/m³)</option>
-              <option value="brent">% Brent</option>
-            </select>
-          </div>
-
-          <div class="row">
-            <label><span>Cenário de Brent</span><span><span id="c2_brent_scenario_lbl">Curva forward</span></span></label>
-            <select id="c2_brent_scenario" style="width:100%; padding:8px; border:1px solid var(--bd); border-radius:8px; font-size:13px;">
-              <option value="forward" selected>Curva forward</option>
-              <option value="bloomberg">Média Bloomberg</option>
-              <option value="custom">Customizado</option>
-            </select>
-          </div>
-
-          <div id="c2_brent_custom_box" style="display:none;">
-          <div class="row">
-            <label><span>Brent (US$/bbl)</span><span>US$ <span id="c2_brent_lbl">66.90</span></span></label>
-            <input type="range" id="c2_brent" min="40" max="100" step="0.1" value="62.0">
-          </div>
-          </div>
-
-          <div id="c2_brent_price_box" style="display:none;">
-          <div class="row">
-              <label><span>Preço de venda (% do Brent)</span><span><span id="c2_pct_lbl">25.0</span>%</span></label>
-              <input type="range" id="c2_pct" min="0" max="32" step="0.1" value="25">
-              <div class="small">Brent: US$ <span id="c2_brent_lbl2">62.00</span> / bbl → preço gás ≈ US$ <span id="c2_price_usd_lbl">15.50</span> / MMBtu</div>
-            </div>
-          </div>
-
-
-          <div class="row">
-            <label><span>Custo de abandono (R$ mi)</span><span>R$ <span id="c2_abd_lbl">50.00</span></span></label>
-            <input type="range" id="c2_abd" min="0" max="100" step="0.5" value="50">
-          </div>
-
-          <div class="row">
-            <label><span>CapEx (R$ mi)</span><span>R$ <span id="c2_capex_lbl">120.00</span></span></label>
-            <input type="range" id="c2_capex" min="0" max="150" step="0.5" value="120">
-          </div>
-
-          <div class="row">
-            <label><span>Construção / início (meses)</span><span><span id="c2_build_lbl">12</span></span></label>
-            <input type="range" id="c2_build" min="0" max="36" step="1" value="12">
-            <div class="small">CapEx dividido igualmente entre os meses de construção.</div>
-          </div>
-
-          <div class="row">
-            <label><span>Modelo alavancado?</span><span><input type="checkbox" id="c2_debt_on"></span></label>
-          </div>
-
-          <div id="debt_box" style="opacity:.55;pointer-events:none;">
-            <div class="row">
-              <label><span>% do CapEx financiado</span><span><span id="c2_debt_pct_lbl">80</span>%</span></label>
-              <input type="range" id="c2_debt_pct" min="0" max="100" step="1" value="80">
-            </div>
-
-            <div class="row">
-              <label><span>Carência (meses)</span><span><span id="c2_grace_lbl">12</span></span></label>
-              <input type="range" id="c2_grace" min="0" max="24" step="1" value="12">
-            </div>
-
-            <div class="row">
-              <label><span>Vencimento (meses, incl. carência)</span><span><span id="c2_maturity_lbl">60</span></span></label>
-              <input type="range" id="c2_maturity" min="0" max="120" step="1" value="60">
-            </div>
-
-            <div class="row">
-              <label><span>Custo da dívida (a.a.)</span><span><span id="c2_rate_lbl">9.0</span>%</span></label>
-              <input type="range" id="c2_rate" min="0" max="15" step="0.1" value="9">
-            </div>
-          </div>
-
-          <div class="row">
-            <label><span>Ke (real)</span><span><span id="c2_ke_lbl">25.0</span>%</span></label>
-            <input type="range" id="c2_ke" min="0" max="50" step="0.1" value="25">
-          </div>
-
-          <div class="small">Royalties 5,5% sobre receita; depreciação linear 10 anos; tributos 34% do EBT; dívida emitida conforme CapEx; vencimento inclui carência.</div>
-        </section>
-
-        <section class="card scenario-table">
-          <div class="flex">
-            <h3 style="margin:0;font-size:14px;">Fluxo de Caixa (R$ milhões, nominais)</h3>
-            <div class="small">Resumo anual equivalente; fração ajusta último ano.</div>
-          </div>
-          <div style="overflow:auto; margin-top:8px;">
-            <table>
-              <thead>
-                <tr>
-                  <th>Ano</th><th>Fraç.</th><th>Reservas restantes</th><th>Produção média (m³/dia)</th><th>Preço médio (R$/m³)</th><th>Receita</th><th>Royalties</th><th>EBITDA</th><th>Aband.</th><th>Impostos</th><th>Capex</th><th>FCFE</th><th>PV</th>
-                </tr>
-              </thead>
-              <tbody id="c2_tbody">
-                <tr><td colspan="10" class="small">Sem dados.</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-      </div>
-      <div class="note">Notas: (i) preços em US$/MMBtu derivados do Brent (%); (ii) receita bruta = volume × preço / (1 - 9,25% gross-up PIS/COFINS); (iii) receita líquida = receita bruta - tributos sobre faturamento (10,65% em lucro presumido ou 16,25% em lucro real, conforme receita bruta do ano anterior > R$ 78 milhões); (iv) royalties 5,5% da receita bruta; (v) tributos sobre lucro: lucro real = 34% sobre EBT; lucro presumido = 3,08% da receita bruta (IRPJ: 2% + CSLL: 1,08%); (vi) depreciação linear 10 anos; (vii) NPV em R$ milhões; (viii) produção limitada a <span id="c2_reserves_note">470,00</span> MMm³; (ix) COGS base de R$ 2.463.662,60/ano, atualizado anualmente em janeiro, proporcional ao mês; (x) SG&A base de R$ 2.301.987,22/ano, atualizado anualmente em janeiro, proporcional ao mês; (xi) Preço base de R$ 2,3608/m³, atualizado anualmente em junho; (xii) Leasing de R$ 3,6 milhões/ano (despesa financeira), proporcional ao mês; (xiii) Maintenance CapEx de 0,5% da receita bruta; (xiv) EBITDA = Receita líquida - Royalties - COGS - SG&A; (xv) EBT = EBITDA - Depreciação - Leasing; (xvi) corte econômico: produção finaliza se lucro líquido < R$ 500 mil/mês (base 2026), ajustado pela inflação anualmente em janeiro.</div>
-    </div>
   </div>
 
   <!-- Seção de Gráficos -->
-  <div class="wrap" style="margin-top: 32px;">
+  <div id="view-graficos" class="wrap hidden" style="margin-top: 32px;">
     <div class="card">
       <h2>Gráficos de Produção</h2>
       <div style="margin-top: 16px;">
@@ -963,11 +1580,6 @@
       return reservesMM * 1_000_000;
     }
     
-    // Função para obter reservas do cenário 2
-    function getReservesC2(){
-      var reservesMM = +document.getElementById('c2_reserves').value;
-      return reservesMM * 1_000_000;
-    }
     
     // Função para obter teto de volume diário por ano (em m³/dia)
     function getDailyVolumeCeiling(year){
@@ -1109,43 +1721,6 @@
       return Math.min(volume, ceiling);
     }
     
-    // Função para obter volume diário baseado no cenário de curva e no ano (Cenário 2)
-    function getDailyVolumeC2(year, curveType, fullVolume, totalReserves, availableReserves){
-      var volume = 0;
-      if(curveType === 'full'){
-        volume = fullVolume * 1000; // mil m³/dia para m³/dia
-      } else if(curveType === 'qdc'){
-        if(year >= 2026 && year <= 2035){
-          volume = 40 * 1000; // 40 mil m³/dia
-        }
-      } else if(curveType === '3maq'){
-        if(year >= 2026 && year <= 2027){
-          volume = 40 * 1000; // 40 mil m³/dia
-        } else if(year >= 2028 && year <= 2035){
-          volume = 56 * 1000; // 56 mil m³/dia
-        }
-      } else if(curveType === 'qdcqdca'){
-        if(year >= 2026 && year <= 2027){
-          volume = 40 * 1000; // 40 mil m³/dia
-        } else if(year >= 2028 && year <= 2032){
-          volume = 80 * 1000; // 80 mil m³/dia
-        } else if(year >= 2033 && year <= 2035){
-          volume = 60 * 1000; // 60 mil m³/dia
-        }
-      }
-      
-      // Aplicar restrição de reservas para 2035 (apenas 1P e 1P+1C com curva Full)
-      if(totalReserves !== undefined && availableReserves !== undefined) {
-        var maxVolumeConstraint = getMaxVolumeForReservesConstraint(year, curveType, fullVolume, totalReserves, availableReserves);
-        if(maxVolumeConstraint !== null) {
-          volume = Math.min(volume, maxVolumeConstraint);
-        }
-      }
-      
-      // Aplicar teto de volume diário
-      var ceiling = getDailyVolumeCeiling(year);
-      return Math.min(volume, ceiling);
-    }
 
     // Formatadores
     function nf2(v){ return (v||0).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2}); }
@@ -1652,460 +2227,13 @@
       }
     }
 
-    // ---------- Cenário 2 ----------
-    function recalcC2(){
-      try{
-        var reservesMM = +document.getElementById('c2_reserves').value;
-        var totalResM3 = getReservesC2();
-        var prodK = +document.getElementById('c2_prod').value;
-        var curveType = document.getElementById('c2_curve').value;
-        var modelType = document.getElementById('c2_model').value;
-        var isRealModel = (modelType === 'real');
-        var priceScenario = document.getElementById('c2_price_scenario').value;
-        var brentScenario = document.getElementById('c2_brent_scenario').value;
-        var customBrent = +document.getElementById('c2_brent').value;
-        var brent = getBrentValue(brentScenario, START_YEAR, customBrent); // Valor inicial para exibição
-        var pct   = +document.getElementById('c2_pct').value;
-        var abd   = +document.getElementById('c2_abd').value;
-        var capex = +document.getElementById('c2_capex').value;
-        var build = Math.max(0, Math.min(36, Math.round(+document.getElementById('c2_build').value)));
-        var debtOn = document.getElementById('c2_debt_on').checked;
-        var debtPct = +document.getElementById('c2_debt_pct').value;
-        var grace = Math.max(0, Math.min(24, Math.round(+document.getElementById('c2_grace').value)));
-        var maturity = Math.max(0, Math.min(120, Math.round(+document.getElementById('c2_maturity').value)));
-        var ratePct = +document.getElementById('c2_rate').value;
-        var kePct = +document.getElementById('c2_ke').value;
-        var decayOn = document.getElementById('c2_decay_on').checked;
-        var decayPct = +document.getElementById('c2_decay').value;
-        
-        document.getElementById('c2_reserves_lbl').textContent = nf2(reservesMM);
-        document.getElementById('c2_reserves_note').textContent = nf2(reservesMM);
-        document.getElementById('reserves_display').textContent = nf2(reservesMM);
-        
-        // Atualizar label do dropdown de curva
-        var curveLabels = {'qdc': 'QDC', '3maq': '3 máquinas', 'qdcqdca': 'QDC + QDCA', 'full': 'Full'};
-        document.getElementById('c2_curve_lbl').textContent = curveLabels[curveType];
-        
-        // Habilitar/desabilitar slider de produção baseado no cenário
-        var prodSlider = document.getElementById('c2_prod');
-        var prodLabel = document.getElementById('c2_prod_label');
-        if(curveType === 'full'){
-          prodSlider.disabled = false;
-          prodLabel.textContent = 'Produção no cenário Full';
-        } else {
-          prodSlider.disabled = true;
-          prodLabel.textContent = 'Produção no cenário Full (não aplicável)';
-        }
-        
-        // Atualizar label do dropdown de modelo
-        var modelLabels = {'nominal': 'Nominal', 'real': 'Real'};
-        document.getElementById('c2_model_lbl').textContent = modelLabels[modelType];
-        
-        // Atualizar label do dropdown de preço
-        var priceLabels = {'default': 'Default', 'renegociado': 'Renegociado', 'brent': '% Brent'};
-        document.getElementById('c2_price_scenario_lbl').textContent = priceLabels[priceScenario];
-        
-        // Atualizar label do dropdown de Brent
-        var brentLabels = {'forward': 'Curva forward', 'bloomberg': 'Média Bloomberg', 'custom': 'Customizado'};
-        document.getElementById('c2_brent_scenario_lbl').textContent = brentLabels[brentScenario];
-        
-        // Habilitar/desabilitar controles de % Brent baseado no cenário de preço
-        var brentPriceBox = document.getElementById('c2_brent_price_box');
-        if(priceScenario === 'brent'){
-          brentPriceBox.style.display = 'block';
-        } else {
-          brentPriceBox.style.display = 'none';
-        }
-        
-        // Habilitar/desabilitar slider customizado de Brent baseado no cenário
-        var brentCustomBox = document.getElementById('c2_brent_custom_box');
-        if(brentScenario === 'custom'){
-          brentCustomBox.style.display = 'block';
-        } else {
-          brentCustomBox.style.display = 'none';
-        }
-
-        document.getElementById('c2_prod_lbl').textContent = nf0(prodK);
-        document.getElementById('c2_brent_lbl').textContent = nf2(brent);
-        document.getElementById('c2_brent_lbl2').textContent = nf2(brent);
-        document.getElementById('c2_pct_lbl').textContent   = pf1(pct);
-        document.getElementById('c2_abd_lbl').textContent   = nf2(abd);
-        document.getElementById('c2_capex_lbl').textContent = nf2(capex);
-        document.getElementById('c2_build_lbl').textContent = nf0(build);
-        document.getElementById('c2_debt_pct_lbl').textContent = nf0(debtPct);
-        document.getElementById('c2_grace_lbl').textContent = nf0(grace);
-        document.getElementById('c2_maturity_lbl').textContent = nf0(maturity);
-        document.getElementById('c2_rate_lbl').textContent  = pf1(ratePct);
-        document.getElementById('c2_ke_lbl').textContent    = pf1(kePct);
-        document.getElementById('c2_decay_lbl').textContent = pf2(decayPct);
-
-        var debtBox = document.getElementById('debt_box');
-        debtBox.style.opacity = debtOn ? '1' : '.55';
-        debtBox.style.pointerEvents = debtOn ? 'auto' : 'none';
-
-        var decayBox = document.getElementById('c2_decay_box');
-        decayBox.style.opacity = decayOn ? '1' : '.55';
-        decayBox.style.pointerEvents = decayOn ? 'auto' : 'none';
-        
-        // Atualizar label do dropdown de preço
-        var priceLabels = {'default': 'Default', 'renegociado': 'Renegociado', 'brent': '% Brent'};
-        document.getElementById('c2_price_scenario_lbl').textContent = priceLabels[priceScenario];
-        
-        // Habilitar/desabilitar controles de % Brent baseado no cenário de preço
-        var brentPriceBox = document.getElementById('c2_brent_price_box');
-        if(priceScenario === 'brent'){
-          brentPriceBox.style.display = 'block';
-        } else {
-          brentPriceBox.style.display = 'none';
-        }
-
-        var ke = Math.max(0, kePct)/100;
-        
-        // Calcular preço em R$/m³ baseado no cenário
-        var priceBRLperM3 = 0;
-        var priceUSDperMMBtu = 0;
-        var pricePctBrent = 0;
-        
-        // Calcular preço médio do modelo (usando preço do primeiro mês de operação como referência)
-        // Usar função que considera o cenário de preço
-        var firstOpMonth = opStartM;
-        var firstOpYear = START_YEAR + Math.floor(firstOpMonth / 12);
-        var firstOpMonthInYear = (firstOpMonth % 12) + 1;
-        var brentForFirstMonth = getBrentValue(brentScenario, firstOpYear, customBrent);
-        var priceBRLperM3FirstMonth = getPriceForScenario(priceScenario, firstOpYear, firstOpMonthInYear, brentForFirstMonth, pct, false, isRealModel);
-        pricePctBrent = brentForFirstMonth > 0 ? ((priceBRLperM3FirstMonth * M3_PER_MMBTU) / USD_BRL / brentForFirstMonth) * 100 : 0;
-        
-        document.getElementById('c2_price_pct').textContent = pf1(pricePctBrent);
-        document.getElementById('c2_price_usd').textContent = nf2((priceBRLperM3FirstMonth * M3_PER_MMBTU) / USD_BRL);
-        document.getElementById('c2_price_brl').textContent = nf2(priceBRLperM3FirstMonth);
-
-        var capexMonths = Math.max(1, build), opStartM = build;
-        var totalCapexMi = Math.max(0,capex), capexPerMonthMi = totalCapexMi/capexMonths;
-
-        var depMonths = 120, depPerMonthMi = totalCapexMi/depMonths;
-
-        var financedMi = debtOn ? (totalCapexMi*Math.max(0,Math.min(100,debtPct))/100) : 0;
-        var debtRateMonthly = (Math.max(0,ratePct)/100)/12;
-        var graceMonths = grace, maturityMonths = maturity, amortMonths = Math.max(0, maturityMonths - graceMonths);
-        
-        var decayRate = decayOn ? Math.max(0, Math.min(50, decayPct))/100 : 0;
-
-        var month=0, producedM3=0, maxMonths=6000, debtOutstanding=0;
-        var mTimesU=[], mCfsU=[], mTimesL=[], mCfsL=[], npvU=0, npvL=0;
-        var yearMap = {};
-        var availableReserves = totalResM3;
-        var totalRevenueMiC2 = 0;
-        var totalEbitdaMiC2 = 0;
-
-        while(month<maxMonths && availableReserves > 0){
-          var tYears = month/12;
-          var year = START_YEAR + Math.floor(month/12);
-
-          // Obter volume diário baseado no cenário de curva e no ano
-          var dailyM3 = getDailyVolumeC2(year, curveType, prodK, totalResM3, availableReserves);
-          // Calcular mês no ano (1-12)
-          var monthInYear = (month % 12) + 1;
-          var daysInThisMonth = getDaysInMonth(monthInYear, year);
-          var monthlyM3 = dailyM3 * daysInThisMonth;
-
-          var mProd=0;
-          if(month>=opStartM && monthlyM3>0 && availableReserves > 0){
-            mProd = Math.min(monthlyM3, availableReserves);
-          }
-          
-          // Calcular valores nominais para este mês (monthInYear já foi calculado acima)
-          // Obter valor do Brent para este ano baseado no cenário
-          var brentForYear = getBrentValue(brentScenario, year, customBrent);
-          // Para preço, usar função que considera o cenário de preço
-          var nominalPrice = getPriceForScenario(priceScenario, year, monthInYear, brentForYear, pct, false, isRealModel);
-          var nominalCogs = getNominalCogs(year, monthInYear, isRealModel);
-          var nominalSga = getNominalSga(year, monthInYear, isRealModel);
-          
-          // Calcular receita (com gross-up e tributos sobre faturamento)
-          // Determinar regime tributário baseado na receita bruta do ano anterior
-          var previousYear = year - 1;
-          var previousYearGrossRevenue = (previousYear >= START_YEAR && yearMap[previousYear]) ? 
-            (yearMap[previousYear].grossRevenue || 0) : 0;
-          var isLucroReal = determineTaxRegime(previousYearGrossRevenue);
-          
-          var grossRevenue = calculateGrossRevenue(mProd, nominalPrice);
-          var turnoverTaxes = calculateTurnoverTaxes(grossRevenue, isLucroReal);
-          var netRevenue = grossRevenue - turnoverTaxes;
-          
-          var grossRevenueMi = grossRevenue / 1_000_000;
-          var turnoverTaxesMi = turnoverTaxes / 1_000_000;
-          var revenueMi = netRevenue / 1_000_000; // Receita líquida em milhões
-          
-          // Royalties e Maintenance CapEx calculados sobre receita bruta
-          var royaltiesMi = ROYALTY_RATE * grossRevenueMi;
-          var maintenanceCapexMi = grossRevenueMi * MAINTENANCE_CAPEX_RATE;
-          
-          // Calcular valores mensais proporcionais aos dias do mês
-          var daysInYear = getDaysInYear(year);
-          var cogsMi = (nominalCogs * daysInThisMonth / daysInYear) / 1_000_000;
-          var sgaMi = (nominalSga * daysInThisMonth / daysInYear) / 1_000_000;
-          var leasingMi = (LEASING_ANUAL * daysInThisMonth / daysInYear) / 1_000_000;
-          
-          var capexThis = (month<capexMonths) ? capexPerMonthMi : 0;
-          // Incluir Maintenance CapEx no Capex total
-          var totalCapexThis = capexThis + maintenanceCapexMi;
-          
-          // EBITDA = Receita líquida - Royalties - COGS - SG&A
-          var ebitdaMi = revenueMi - royaltiesMi - cogsMi - sgaMi;
-          // EBT = EBITDA - Leasing (leasing é despesa financeira)
-          var ebtMi = ebitdaMi - leasingMi;
-          // Tributos sobre lucro (considerando regime tributário)
-          var taxesMi = calculateProfitTaxes(ebtMi * 1_000_000, grossRevenue, isLucroReal) / 1_000_000;
-          // Lucro líquido = EBT - Tributos
-          var netProfitMi = ebtMi - taxesMi;
-          var netProfit = netProfitMi * 1_000_000; // Converter para R$
-          
-          // Corte econômico: se lucro líquido < valor ajustado pela inflação, parar produção
-          var minProfitThreshold = getMinProfitThreshold(year, monthInYear, isRealModel);
-          if(mProd > 0 && netProfit < minProfitThreshold){
-            break;
-          }
-          
-          // Se passou no corte econômico, subtrair das reservas
-          if(mProd > 0){
-            availableReserves -= mProd;
-          producedM3 += mProd;
-          }
-          
-          // Aplicar decaimento ao final de cada ano (ao final do mês 11, 23, 35, etc.)
-          if(decayOn && decayRate > 0 && month > 0 && (month + 1) % 12 === 0 && availableReserves > 0){
-            availableReserves = availableReserves * (1 - decayRate);
-          }
-
-          // Acumular receita e EBITDA apenas quando há produção
-          if(mProd > 0){
-            totalRevenueMiC2 += revenueMi;
-            totalEbitdaMiC2 += ebitdaMi;
-          }
-
-          var depMi = (month>=opStartM && month<opStartM+depMonths) ? depPerMonthMi : 0;
-
-          var isLastOp = (availableReserves <= 0 && mProd > 0);
-          var abdCashMi = isLastOp ? Math.max(0,abd) : 0;
-
-          // Dívida
-          var drawMi=0, interestMi=0, principalMi=0;
-          if(debtOn){
-            var financedThis = (month<capexMonths) ? (financedMi/capexMonths) : 0;
-            drawMi = financedThis;
-            var interestBase = debtOutstanding;
-            interestMi = interestBase>0 ? interestBase*debtRateMonthly : 0;
-            debtOutstanding += drawMi;
-
-            if(month>=graceMonths && month<maturityMonths){
-              if(amortMonths>0){
-                var remainingMonths = maturityMonths - Math.max(month, graceMonths);
-                principalMi = debtOutstanding/remainingMonths;
-              } else {
-                if(month===graceMonths) principalMi = debtOutstanding;
-              }
-            } else if(month>=maturityMonths && debtOutstanding>0){
-              principalMi = debtOutstanding;
-            }
-            debtOutstanding = Math.max(0, debtOutstanding - principalMi);
-          }
-
-          // DRE sem abandono
-          // EBT = EBITDA - Depreciação - Leasing (leasing é despesa financeira)
-          var ebtUnlev = ebitdaMi - depMi - leasingMi;
-          // Tributos sobre lucro (considerando regime tributário) - desalavancado
-          var taxUnlev = calculateProfitTaxes(ebtUnlev * 1_000_000, grossRevenue, isLucroReal) / 1_000_000;
-          var netIncUnlev = ebtUnlev - taxUnlev;
-
-          var ebtLev = ebtUnlev - interestMi;
-          // Tributos sobre lucro (considerando regime tributário) - alavancado
-          var taxLev = calculateProfitTaxes(ebtLev * 1_000_000, grossRevenue, isLucroReal) / 1_000_000;
-          var netIncLev = ebtLev - taxLev;
-
-          // FCFE (abandono apenas em caixa)
-          var fcfeU = netIncUnlev + depMi - totalCapexThis - abdCashMi;
-          var netBorrow = drawMi - principalMi;
-          var fcfeL = netIncLev + depMi - totalCapexThis + netBorrow - abdCashMi;
-
-          // Calcular Ke nominal para este ano (baseado na inflação do ano)
-          var keNominal = calculateNominalKe(ke, year, isRealModel);
-          var pvU = fcfeU/Math.pow(1+keNominal, tYears);
-          var pvL = fcfeL/Math.pow(1+keNominal, tYears);
-          npvU += pvU; npvL += pvL;
-
-          mTimesU.push(tYears); mCfsU.push(fcfeU);
-          mTimesL.push(tYears); mCfsL.push(fcfeL);
-
-          var year = START_YEAR + Math.floor(month/12);
-          if(!yearMap[year]){
-            yearMap[year] = {frac:0,revenue:0,royalties:0,ebitda:0,aband:0,taxes:0,capex:0,fcfe:0,pv:0,reservesRemaining:0,producedM3:0,grossRevenue:0};
-          }
-          var ym = yearMap[year];
-          ym.revenue += revenueMi;
-          ym.royalties += royaltiesMi;
-          ym.ebitda += ebitdaMi;
-          ym.aband += abdCashMi;
-          ym.taxes += taxUnlev;
-          ym.capex += totalCapexThis;
-          ym.fcfe += fcfeU;
-          ym.pv += pvU;
-          ym.producedM3 += mProd; // Acumular produção mensal
-          ym.grossRevenue += grossRevenue; // Acumular receita bruta para determinar regime do próximo ano
-          ym.grossRevenue += grossRevenue; // Acumular receita bruta para determinar regime do próximo ano
-          if(monthlyM3>0 && mProd>0){
-            // Calcular fração do ano baseada nos dias reais do mês
-            var daysInThisMonth = getDaysInMonth(monthInYear, year);
-            var daysInYear = getDaysInYear(year);
-            ym.frac += (Math.min(1, mProd/monthlyM3) * daysInThisMonth) / daysInYear;
-          }
-          
-          // Atualizar reservas restantes ao final de cada ano (após decaimento)
-          if((month + 1) % 12 === 0 || availableReserves <= 0){
-            ym.reservesRemaining = availableReserves;
-          }
-
-          month++;
-        }
-
-        var irrU = xirr(mCfsU, mTimesU);
-        var irrL = xirr(mCfsL, mTimesL);
-
-        document.getElementById('c2_irr_unlev').textContent = irrU!=null ? (pf2(irrU*100)+'%') : '—';
-        document.getElementById('c2_irr_lev').textContent = irrL!=null ? (pf2(irrL*100)+'%') : '—';
-
-        document.getElementById('c2_npv_unlev').textContent = nf2(npvU);
-        document.getElementById('c2_npv_lev').textContent = nf2(npvL);
-
-        // Calcular EV/EBITDA implícito (usando NPV desalavancado)
-        var evEbitdaImplC2 = '—';
-        if(yearMap[2028] && yearMap[2028].ebitda > 0 && npvU !== 0){
-          // Calcular o Present Value do EBITDA de 2028 usando a mesma mecânica de desconto do FCFE
-          var year2028 = 2028;
-          // O EBITDA de 2028 no yearMap é acumulado ao longo do ano
-          // Vamos usar o mês médio de 2028 para o desconto (aproximadamente mês 30, considerando meio do ano)
-          // O primeiro mês de 2028 seria: (2028 - START_YEAR) * 12 = 24 meses
-          // O mês médio seria aproximadamente: 24 + 6 = 30 meses
-          var month2028Start = (2028 - START_YEAR) * 12; // Mês inicial de 2028
-          var month2028Mid = month2028Start + 6; // Mês médio de 2028 (aproximado)
-          var tYears2028 = month2028Mid / 12; // Mesma lógica usada para o FCFE (tYears = month/12)
-          var keNominal2028 = calculateNominalKe(ke, year2028, isRealModel);
-          var pvEbitda2028 = yearMap[2028].ebitda / Math.pow(1+keNominal2028, tYears2028);
-          if(pvEbitda2028 > 0){
-            evEbitdaImplC2 = formatMultiple(npvU / pvEbitda2028);
-          }
-        }
-        document.getElementById('c2_ev_ebitda').textContent = evEbitdaImplC2;
-
-        var opMonths = Math.max(0, month - build);
-        // Calcular total de dias de operação somando os dias corretos de cada mês
-        var totalDays = 0;
-        if(opMonths > 0) {
-          for(var m = build; m < month; m++) {
-            var mYear = START_YEAR + Math.floor(m / 12);
-            var mMonthInYear = (m % 12) + 1;
-            totalDays += getDaysInMonth(mMonthInYear, mYear);
-          }
-        }
-        var volMedK = totalDays > 0 ? (producedM3 / totalDays) / 1000 : 0;
-        var lastYear = opMonths>0 ? (START_YEAR + Math.floor((build + opMonths - 1)/12)) : '—';
-
-        document.getElementById('c2_volmed').textContent = nf0(volMedK);
-        document.getElementById('c2_res').textContent = nf2(producedM3/1_000_000);
-        document.getElementById('c2_lastyear').textContent = lastYear;
-        
-        // Calcular margem EBITDA média (soma dos EBITDAs / soma das receitas)
-        var ebitdaMarginPctC2 = totalRevenueMiC2 > 0 ? (totalEbitdaMiC2 / totalRevenueMiC2) * 100 : 0;
-        document.getElementById('c2_ebitda_margin').textContent = totalRevenueMiC2 > 0 ? (pf2(ebitdaMarginPctC2) + '%') : '—';
-
-        var tbody2 = document.getElementById('c2_tbody');
-        tbody2.innerHTML = '';
-        var yearKeys = Object.keys(yearMap).map(function(k){ return +k; }).sort(function(a,b){ return a-b; });
-        
-        // Garantir que o último ano tenha as reservas restantes atualizadas
-        if(yearKeys.length > 0){
-          var lastYearKey = yearKeys[yearKeys.length - 1];
-          if(yearMap[lastYearKey]){
-            yearMap[lastYearKey].reservesRemaining = availableReserves;
-          }
-        }
-        if(yearKeys.length===0){
-          var trEmpty=document.createElement('tr');
-          trEmpty.innerHTML='<td colspan="13" class="small">Sem dados.</td>';
-          tbody2.appendChild(trEmpty);
-        }else{
-          yearKeys.forEach(function(y){
-            var data = yearMap[y];
-            var tr=document.createElement('tr');
-            function td(val){ var cell=document.createElement('td'); cell.textContent=val; return cell; }
-            var reservesRemainingMiM3 = data.reservesRemaining / 1_000_000;
-            // Calcular produção média diária: produção total / (dias do ano * fração)
-            var yearDays = getDaysInYear(y);
-            var diasAno = data.frac * yearDays;
-            var prodMediaDiaria = diasAno > 0 ? (data.producedM3 / diasAno) : 0; // m³/dia
-            // Calcular preço médio nominal do ano (usando mês 6 como referência)
-            // Obter valor do Brent para este ano baseado no cenário
-            var brentForYear = getBrentValue(brentScenario, y, customBrent);
-            // Para preço, usar função que considera o cenário de preço
-            var avgNominalPrice = getPriceForScenario(priceScenario, y, 6, brentForYear, pct, true);
-            tr.appendChild(td(y));
-            tr.appendChild(td(data.frac.toFixed(3)));
-            tr.appendChild(td(nf2(reservesRemainingMiM3)));
-            tr.appendChild(td(nf0(prodMediaDiaria/1000))); // Convertendo para mil m³/dia para exibição
-            tr.appendChild(td(nf2(avgNominalPrice)));
-            tr.appendChild(td(nf2(data.revenue)));
-            tr.appendChild(td(nf2(data.royalties)));
-            tr.appendChild(td(nf2(data.ebitda)));
-            tr.appendChild(td(nf2(data.aband)));
-            tr.appendChild(td(nf2(data.taxes)));
-            tr.appendChild(td(nf2(data.capex)));
-            tr.appendChild(td(nf2(data.fcfe)));
-            tr.appendChild(td(nf2(data.pv)));
-            tbody2.appendChild(tr);
-          });
-        }
-        
-        // Converter yearMap para formato years array e armazenar
-        var c2YearsArray = [];
-        yearKeys.forEach(function(y){
-          var data = yearMap[y];
-          var yearDays = getDaysInYear(y);
-          c2YearsArray.push({
-            year: y,
-            produced: data.producedM3 || 0,
-            dailyM3: data.producedM3 > 0 ? (data.producedM3 / (data.frac * yearDays)) : 0,
-            remaining: data.reservesRemaining || 0,
-            frac: data.frac || 0,
-            revenueMi: data.revenue || 0, // Receita líquida em milhões
-            ebitdaMi: data.ebitda || 0, // EBITDA em milhões
-            fcfeMi: data.fcfe || 0 // FCFE em milhões
-          });
-        });
-        currentC2Data = c2YearsArray;
-        
-        // Atualizar gráficos se o cenário 2 estiver ativo
-        if(currentActiveScenario === 'c2'){
-          updateVolumeChart(c2YearsArray);
-          updateReservesChart(c2YearsArray);
-          updateRevenueChart(c2YearsArray);
-          updateFcfeChart(c2YearsArray);
-        }
-
-      }catch(e){
-        console.error('Erro C2:', e);
-      }
-    }
 
     // Bind
     function bindInputs(){
       ['c1_reserves','c1_curve','c1_model','c1_price_scenario','c1_brent_scenario','c1_prod','c1_brent','c1_pct','c1_abd','c1_capex','c1_buy','c1_ke','c1_decay']
         .forEach(function(id){ var el=document.getElementById(id); el.addEventListener('input', recalcC1); el.addEventListener('change', recalcC1); });
 
-      ['c2_reserves','c2_curve','c2_model','c2_price_scenario','c2_brent_scenario','c2_prod','c2_brent','c2_pct','c2_abd','c2_capex','c2_build','c2_debt_pct','c2_grace','c2_maturity','c2_rate','c2_ke','c2_decay']
-        .forEach(function(id){ var el=document.getElementById(id); el.addEventListener('input', recalcC2); el.addEventListener('change', recalcC2); });
-
       document.getElementById('c1_decay_on').addEventListener('change', recalcC1);
-      document.getElementById('c2_debt_on').addEventListener('change', recalcC2);
-      document.getElementById('c2_decay_on').addEventListener('change', recalcC2);
 
       document.getElementById('resetBtn').addEventListener('click', function(){
         // Defaults C1
@@ -2123,37 +2251,30 @@
         document.getElementById('c1_ke').value=25;
         document.getElementById('c1_decay_on').checked=false;
         document.getElementById('c1_decay').value=5;
-        // Defaults C2
-        document.getElementById('c2_reserves').value=992.12; // 1P+3C como padrão
-        document.getElementById('c2_curve').value='full';
-        document.getElementById('c2_model').value='nominal';
-        document.getElementById('c2_price_scenario').value='default';
-        document.getElementById('c2_brent_scenario').value='forward';
-        document.getElementById('c2_prod').value=150;
-        document.getElementById('c2_brent').value=62.0;
-        document.getElementById('c2_pct').value=25;
-        document.getElementById('c2_abd').value=50;
-        document.getElementById('c2_capex').value=120;
-        document.getElementById('c2_build').value=12;
-        document.getElementById('c2_debt_on').checked=false;
-        document.getElementById('c2_debt_pct').value=80;
-        document.getElementById('c2_grace').value=12;
-        document.getElementById('c2_maturity').value=60;
-        document.getElementById('c2_rate').value=9;
-        document.getElementById('c2_ke').value=25;
-        document.getElementById('c2_decay_on').checked=false;
-        document.getElementById('c2_decay').value=5;
-        recalcC1(); recalcC2();
+        recalcC1();
       });
 
       // Tabs
+      var vInfo = document.getElementById('view-info-gerais');
       var v1 = document.getElementById('view-venda');
-      var v2 = document.getElementById('view-liq');
+      var vGraficos = document.getElementById('view-graficos');
+      var bInfo = document.getElementById('tab-info-gerais');
       var b1 = document.getElementById('tab-venda');
-      var b2 = document.getElementById('tab-liq');
+      
+      bInfo.addEventListener('click', function(){
+        bInfo.classList.add('active');
+        b1.classList.remove('active');
+        vInfo.classList.remove('hidden');
+        v1.classList.add('hidden');
+        vGraficos.classList.add('hidden');
+      });
+      
       b1.addEventListener('click', function(){
-        b1.classList.add('active'); b2.classList.remove('active');
-        v1.classList.remove('hidden'); v2.classList.add('hidden');
+        b1.classList.add('active');
+        bInfo.classList.remove('active');
+        v1.classList.remove('hidden');
+        vInfo.classList.add('hidden');
+        vGraficos.classList.remove('hidden');
         currentActiveScenario = 'c1';
         // Atualizar gráficos com dados do cenário 1
         if(currentC1Data){
@@ -2162,25 +2283,41 @@
           updateRevenueChart(currentC1Data);
           updateFcfeChart(currentC1Data);
         }
+        // Redimensionar gráficos quando a aba é ativada
+        setTimeout(function(){
+          if(volumeChart) volumeChart.resize();
+          if(reservesChart) reservesChart.resize();
+          if(revenueChart) revenueChart.resize();
+          if(fcfeChart) fcfeChart.resize();
+        }, 100);
       });
-      b2.addEventListener('click', function(){
-        b2.classList.add('active'); b1.classList.remove('active');
-        v2.classList.remove('hidden'); v1.classList.add('hidden');
-        currentActiveScenario = 'c2';
-        // Atualizar gráficos com dados do cenário 2
-        if(currentC2Data){
-          updateVolumeChart(currentC2Data);
-          updateReservesChart(currentC2Data);
-          updateRevenueChart(currentC2Data);
-          updateFcfeChart(currentC2Data);
+
+      // Toggle para cards de entidades
+      var entityItems = document.querySelectorAll('.entity-item');
+      entityItems.forEach(function(item){
+        var header = item.querySelector('.entity-header');
+        if(header){
+          header.addEventListener('click', function(){
+            item.classList.toggle('collapsed');
+          });
+        }
+      });
+
+      // Toggle para cards do bento grid
+      var bentoCards = document.querySelectorAll('.bento-card');
+      bentoCards.forEach(function(card){
+        var header = card.querySelector('.bento-card-header');
+        if(header){
+          header.addEventListener('click', function(){
+            card.classList.toggle('collapsed');
+          });
         }
       });
     }
 
     // Variáveis globais para armazenar dados dos cenários
     var currentC1Data = null;
-    var currentC2Data = null;
-    var currentActiveScenario = 'c1'; // 'c1' ou 'c2'
+    var currentActiveScenario = 'c1';
     
     // Gráfico de volumes
     var volumeChart = null;
@@ -2734,12 +2871,7 @@
       var reserves3C = [];
       
       // Obter reservas selecionadas do cenário ativo
-      var selectedReservesMM = 0;
-      if(currentActiveScenario === 'c1'){
-        selectedReservesMM = +document.getElementById('c1_reserves').value;
-      } else {
-        selectedReservesMM = +document.getElementById('c2_reserves').value;
-      }
+      var selectedReservesMM = +document.getElementById('c1_reserves').value;
       
       // Calcular reservas iniciais baseado na seleção
       // 1P: 241.04, 1P+1C: 362.31, 1P+2C: 576.70, 1P+3C: 992.12
@@ -3327,9 +3459,53 @@
       initReservesChart();
       initRevenueChart();
       initFcfeChart();
-      recalcC1(); recalcC2();
+      recalcC1();
       // Configurar ResizeObserver após inicialização dos gráficos
       setTimeout(setupChartResizeObservers, 100);
+    })();
+  </script>
+
+  <!-- Image Modal -->
+  <div id="imageModal" class="image-modal">
+    <span class="image-modal-close">&times;</span>
+    <img class="image-modal-content" id="modalImage" src="" alt="">
+  </div>
+
+  <script>
+    // Modal de zoom para imagens
+    (function(){
+      var modal = document.getElementById('imageModal');
+      var modalImg = document.getElementById('modalImage');
+      var closeBtn = document.querySelector('.image-modal-close');
+      var zoomableImages = document.querySelectorAll('.zoomable-image');
+
+      zoomableImages.forEach(function(img){
+        img.addEventListener('click', function(){
+          modal.classList.add('active');
+          modalImg.src = this.src;
+          modalImg.alt = this.alt;
+        });
+      });
+
+      if(closeBtn){
+        closeBtn.addEventListener('click', function(){
+          modal.classList.remove('active');
+        });
+      }
+
+      if(modal){
+        modal.addEventListener('click', function(e){
+          if(e.target === modal){
+            modal.classList.remove('active');
+          }
+        });
+      }
+
+      document.addEventListener('keydown', function(e){
+        if(e.key === 'Escape' && modal && modal.classList.contains('active')){
+          modal.classList.remove('active');
+        }
+      });
     })();
   </script>
 </body>
