@@ -718,8 +718,15 @@
         word-break: break-word !important;
       }
     }
-    @media(max-width: 420px){
-      /* Mudar para 1 coluna em telas muito pequenas */
+    @media(max-width: 640px){
+      /* Garantir 2 colunas em mobile para celulares comuns (iPhone, Samsung S20) */
+      #view-venda .kpis {
+        grid-template-columns: repeat(2, 1fr) !important;
+        grid-gap: 10px;
+      }
+    }
+    @media(max-width: 320px){
+      /* Mudar para 1 coluna apenas em telas muito pequenas (< 320px) */
       #view-venda .kpis {
         grid-template-columns: 1fr !important;
       }
