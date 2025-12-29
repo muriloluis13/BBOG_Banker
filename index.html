@@ -699,6 +699,31 @@
       table { font-size: 11px; }
       th, td { padding: 6px 8px; }
     }
+    @media(max-width: 640px){
+      /* Cards da aba Valuation em mobile - altura automática */
+      #view-venda .kpi {
+        height: auto !important;
+        min-height: 44px !important;
+        max-height: none !important;
+        padding: 10px 12px !important;
+        white-space: normal !important;
+        overflow-wrap: anywhere !important;
+        overflow: visible !important;
+      }
+      #view-venda .kpi .cap,
+      #view-venda .kpi .val,
+      #view-venda .kpi .sub {
+        white-space: normal !important;
+        overflow-wrap: anywhere !important;
+        word-break: break-word !important;
+      }
+    }
+    @media(max-width: 420px){
+      /* Mudar para 1 coluna em telas muito pequenas */
+      #view-venda .kpis {
+        grid-template-columns: 1fr !important;
+      }
+    }
     @media(max-width: 480px){
       .wrap { padding: 0 8px; }
       .card { padding: 10px; }
@@ -3447,13 +3472,30 @@
         allKpis.forEach(function(kpi){
           kpi.style.minHeight = '';
           kpi.style.height = '';
+          kpi.style.maxHeight = '';
         });
         fixedKpiHeight = null;
         return;
       }
       
+      // Em mobile (<640px), não aplicar altura fixa aos cards da aba Valuation
+      if(window.innerWidth <= 640) {
+        var valuationKpis = document.querySelectorAll('#view-venda .kpi');
+        valuationKpis.forEach(function(kpi){
+          kpi.style.height = '';
+          kpi.style.minHeight = '';
+          kpi.style.maxHeight = '';
+        });
+        // Não aplicar altura fixa em mobile para Valuation
+        return;
+      }
+      
       var kpiContainers = document.querySelectorAll('.kpis');
       kpiContainers.forEach(function(container){
+        // Apenas aplicar para containers que não são da aba Valuation
+        if(container.closest('#view-venda')) {
+          return; // Pular cards da aba Valuation
+        }
         var priceBox = container.querySelector('.kpi.priceBox');
         if(priceBox){
           // Se ainda não temos altura fixa, calcular uma vez
@@ -3463,6 +3505,7 @@
             allKpis.forEach(function(kpi){
               kpi.style.minHeight = '';
               kpi.style.height = '';
+              kpi.style.maxHeight = '';
             });
             // Forçar reflow para medir altura natural
             void priceBox.offsetHeight;
@@ -3518,8 +3561,17 @@
     window.addEventListener('resize', function(){
       clearTimeout(resizeTimeout2);
       resizeTimeout2 = setTimeout(function(){
-        if(window.innerWidth <= 768 && fixedKpiHeight === null){
-          // Se voltou para mobile e não tem altura fixa, recalcular
+        // Em mobile <= 640px, garantir que cards da Valuation não tenham altura fixa
+        if(window.innerWidth <= 640) {
+          var valuationKpis = document.querySelectorAll('#view-venda .kpi');
+          valuationKpis.forEach(function(kpi){
+            kpi.style.height = '';
+            kpi.style.minHeight = '';
+            kpi.style.maxHeight = '';
+          });
+        }
+        if(window.innerWidth <= 768 && window.innerWidth > 640 && fixedKpiHeight === null){
+          // Se voltou para mobile (mas > 640px) e não tem altura fixa, recalcular
           setTimeout(equalizeKpiHeights, 100);
         } else if(window.innerWidth > 768){
           // Se voltou para desktop, resetar altura fixa
@@ -3528,6 +3580,7 @@
           allKpis.forEach(function(kpi){
             kpi.style.height = '';
             kpi.style.minHeight = '';
+            kpi.style.maxHeight = '';
           });
         }
       }, 100);
