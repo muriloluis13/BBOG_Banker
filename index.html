@@ -590,6 +590,52 @@
     .row { margin-bottom: 14px; }
     .row label { display:flex; justify-content:space-between; font-size: 13px; margin-bottom: 6px; }
     .row input[type="range"] { width:100%; }
+    
+    /* Toggle Switch */
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 28px;
+      margin-left: 8px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #d1d5db;
+      transition: 0.3s;
+      border-radius: 28px;
+    }
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    .toggle-switch input:checked + .toggle-slider {
+      background-color: #10b981;
+    }
+    .toggle-switch input:checked + .toggle-slider:before {
+      transform: translateX(22px);
+    }
+    .toggle-switch input:focus + .toggle-slider {
+      box-shadow: 0 0 1px #10b981;
+    }
     .kpis { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); grid-gap: 16px; }
     .kpi { border:none; border-radius: 18px; padding: 16px; min-height: 96px; display:flex; flex-direction:column; justify-content:flex-start; color:#000; background:#f5f6f8; box-shadow:0 8px 18px rgba(15,23,42,.08); }
     .kpi .cap { font-size:11px; color:#000; text-transform:uppercase; letter-spacing:.08em; font-weight:400; }
@@ -718,15 +764,8 @@
         word-break: break-word !important;
       }
     }
-    @media(max-width: 640px){
-      /* Garantir 2 colunas em mobile para celulares comuns (iPhone, Samsung S20) */
-      #view-venda .kpis {
-        grid-template-columns: repeat(2, 1fr) !important;
-        grid-gap: 10px;
-      }
-    }
-    @media(max-width: 320px){
-      /* Mudar para 1 coluna apenas em telas muito pequenas (< 320px) */
+    @media(max-width: 420px){
+      /* Mudar para 1 coluna em telas muito pequenas */
       #view-venda .kpis {
         grid-template-columns: 1fr !important;
       }
@@ -852,10 +891,14 @@
             <p>Em agosto de 2023, a BBOG assinou um Contrato de Suprimento de Gás com a GNLink, que iniciou a operação comercial em novembro de 2024.</p>
           </div>
         </div>
-        <div class="bento-card arquivos-card">
-          <h3>Arquivos</h3>
-          <div class="info-content">
-            <div style="margin-top: 12px;">
+        <div class="bento-card arquivos-card collapsed">
+          <div class="bento-card-header">
+            <h3>Arquivos</h3>
+            <span class="bento-card-toggle">▼</span>
+          </div>
+          <div class="bento-card-content">
+            <div class="info-content">
+              <div style="margin-top: 12px;">
               <div style="margin-bottom: 12px;">
                 <a href="Project Belenus - CIM vSent (Lorinvest).pdf" download style="display: flex; align-items: center; padding: 10px; background: #f9fafb; border-radius: 8px; border: 1px solid var(--bd); text-decoration: none; color: var(--text); transition: background 0.2s;">
                   <span style="font-size: 18px; margin-right: 10px;">📄</span>
@@ -870,13 +913,63 @@
                   <span style="font-size: 12px; color: var(--muted);">⬇</span>
                 </a>
               </div>
-              <div>
+              <div style="margin-bottom: 12px;">
                 <a href="Project Belenus_Financial Model_vSent (Lorinvest).xlsx" download style="display: flex; align-items: center; padding: 10px; background: #f9fafb; border-radius: 8px; border: 1px solid var(--bd); text-decoration: none; color: var(--text); transition: background 0.2s;">
                   <span style="font-size: 18px; margin-right: 10px;">📊</span>
                   <span style="font-size: 12px; flex: 1;">Project Belenus_Financial Model_vSent (Lorinvest).xlsx</span>
                   <span style="font-size: 12px; color: var(--muted);">⬇</span>
                 </a>
               </div>
+              <div style="margin-bottom: 12px;">
+                <a href="DF Barra Bonita Óleo e Gás S.A. - 2024.pdf" download style="display: flex; align-items: center; padding: 10px; background: #f9fafb; border-radius: 8px; border: 1px solid var(--bd); text-decoration: none; color: var(--text); transition: background 0.2s;">
+                  <span style="font-size: 18px; margin-right: 10px;">📄</span>
+                  <span style="font-size: 12px; flex: 1;">DF Barra Bonita Óleo e Gás S.A. - 2024.pdf</span>
+                  <span style="font-size: 12px; color: var(--muted);">⬇</span>
+                </a>
+              </div>
+              <div style="margin-bottom: 12px;">
+                <a href="Dossiê BBOG.pdf" download style="display: flex; align-items: center; padding: 10px; background: #f9fafb; border-radius: 8px; border: 1px solid var(--bd); text-decoration: none; color: var(--text); transition: background 0.2s;">
+                  <span style="font-size: 18px; margin-right: 10px;">📄</span>
+                  <span style="font-size: 12px; flex: 1;">Dossiê BBOG.pdf</span>
+                  <span style="font-size: 12px; color: var(--muted);">⬇</span>
+                </a>
+              </div>
+              <div style="margin-bottom: 12px;">
+                <a href="DeGolyer and MacNaughton Reserves Report (Lorinvest).pdf" download style="display: flex; align-items: center; padding: 10px; background: #f9fafb; border-radius: 8px; border: 1px solid var(--bd); text-decoration: none; color: var(--text); transition: background 0.2s;">
+                  <span style="font-size: 18px; margin-right: 10px;">📄</span>
+                  <span style="font-size: 12px; flex: 1;">DeGolyer and MacNaughton Reserves Report (Lorinvest).pdf</span>
+                  <span style="font-size: 12px; color: var(--muted);">⬇</span>
+                </a>
+              </div>
+              <div style="margin-bottom: 12px;">
+                <a href="Lins & Takeguma Reserves Report (Lorinvest).pdf" download style="display: flex; align-items: center; padding: 10px; background: #f9fafb; border-radius: 8px; border: 1px solid var(--bd); text-decoration: none; color: var(--text); transition: background 0.2s;">
+                  <span style="font-size: 18px; margin-right: 10px;">📄</span>
+                  <span style="font-size: 12px; flex: 1;">Lins & Takeguma Reserves Report (Lorinvest).pdf</span>
+                  <span style="font-size: 12px; color: var(--muted);">⬇</span>
+                </a>
+              </div>
+              <div style="margin-bottom: 12px;">
+                <a href="ANP - Consulta Campo de Barra Bonita 2014.pdf" download style="display: flex; align-items: center; padding: 10px; background: #f9fafb; border-radius: 8px; border: 1px solid var(--bd); text-decoration: none; color: var(--text); transition: background 0.2s;">
+                  <span style="font-size: 18px; margin-right: 10px;">📄</span>
+                  <span style="font-size: 12px; flex: 1;">ANP - Consulta Campo de Barra Bonita 2014.pdf</span>
+                  <span style="font-size: 12px; color: var(--muted);">⬇</span>
+                </a>
+              </div>
+              <div style="margin-bottom: 12px;">
+                <a href="ANP - PD Barra Bonita 2022.06.06.pdf" download style="display: flex; align-items: center; padding: 10px; background: #f9fafb; border-radius: 8px; border: 1px solid var(--bd); text-decoration: none; color: var(--text); transition: background 0.2s;">
+                  <span style="font-size: 18px; margin-right: 10px;">📄</span>
+                  <span style="font-size: 12px; flex: 1;">ANP - PD Barra Bonita 2022.06.06.pdf</span>
+                  <span style="font-size: 12px; color: var(--muted);">⬇</span>
+                </a>
+              </div>
+              <div>
+                <a href="Relatório Ambiental - Campo de Barra Bonita 2017.09.pdf" download style="display: flex; align-items: center; padding: 10px; background: #f9fafb; border-radius: 8px; border: 1px solid var(--bd); text-decoration: none; color: var(--text); transition: background 0.2s;">
+                  <span style="font-size: 18px; margin-right: 10px;">📄</span>
+                  <span style="font-size: 12px; flex: 1;">Relatório Ambiental - Campo de Barra Bonita 2017.09.pdf</span>
+                  <span style="font-size: 12px; color: var(--muted);">⬇</span>
+                </a>
+              </div>
+            </div>
             </div>
           </div>
         </div>
@@ -1307,6 +1400,15 @@
           <div class="row">
             <label><span>Ke (real)</span><span><span id="c1_ke_lbl">25.0</span>%</span></label>
             <input type="range" id="c1_ke" min="0" max="50" step="0.1" value="25">
+          </div>
+
+          <div class="row">
+            <label><span>Incluir custo de leasing</span><span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="c1_leasing_on" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </span></label>
           </div>
         </section>
 
@@ -2016,6 +2118,7 @@
         var kePct = +document.getElementById('c1_ke').value;
         var decayOn = document.getElementById('c1_decay_on').checked;
         var decayPct = +document.getElementById('c1_decay').value;
+        var leasingOn = document.getElementById('c1_leasing_on').checked;
         
         document.getElementById('c1_reserves_lbl').textContent = nf2(reservesMM);
         document.getElementById('c1_reserves_note').textContent = nf2(reservesMM);
@@ -2146,7 +2249,7 @@
           
           var cogsMi = (nominalCogs * frac) / 1_000_000;
           var sgaMi = (nominalSga * frac) / 1_000_000;
-          var leasingMi = (LEASING_ANUAL * frac) / 1_000_000;
+          var leasingMi = leasingOn ? (LEASING_ANUAL * frac) / 1_000_000 : 0;
           
           // EBITDA = Receita líquida - Royalties - COGS - SG&A
           var ebitdaMi = revenueMi - royaltiesMi - cogsMi - sgaMi;
@@ -2187,7 +2290,7 @@
           var maintenanceCapexMi = grossRevenueMi * MAINTENANCE_CAPEX_RATE;
           var cogsMi = (nominalCogs * frac) / 1_000_000;
           var sgaMi = (nominalSga * frac) / 1_000_000;
-          var leasingMi = (LEASING_ANUAL * frac) / 1_000_000;
+          var leasingMi = leasingOn ? (LEASING_ANUAL * frac) / 1_000_000 : 0;
           var ebitdaMi = revenueMi - royaltiesMi - cogsMi - sgaMi;
           var ebtMi = ebitdaMi - leasingMi;
           var taxesMi = calculateProfitTaxes(ebtMi * 1_000_000, grossRevenue, isLucroReal) / 1_000_000;
@@ -2196,12 +2299,18 @@
           // FCFE sem abandono (abandono será aplicado apenas no último ano, calculado depois)
           var fcfeMi = ebitdaMi - leasingMi - taxesMi - totalCapexMi;
           
+          // Calcular produção média diária real
+          var avgDailyM3 = (frac > 0 && yearProduced > 0) 
+            ? yearProduced / (daysInYear * frac)
+            : dailyM3; // Fallback para volume teórico se não houver produção
+          
           years.push({
             produced: yearProduced,
             frac: frac,
             remaining: reservesAfterDecay,
             year: year,
-            dailyM3: dailyM3,
+            dailyM3: dailyM3, // Volume diário teórico (mantido para compatibilidade)
+            avgDailyM3: avgDailyM3, // Produção média diária real
             grossRevenue: grossRevenue, // Armazenar receita bruta para determinar regime do próximo ano
             revenueMi: revenueMi, // Receita líquida em milhões
             ebitdaMi: ebitdaMi, // EBITDA em milhões
@@ -2277,7 +2386,7 @@
           // COGS e SG&A proporcionais à fração do ano (valores nominais)
           var cogsMi = (nominalCogs * frac) / 1_000_000;
           var sgaMi = (nominalSga * frac) / 1_000_000;
-          var leasingMi = (LEASING_ANUAL * frac) / 1_000_000;
+          var leasingMi = leasingOn ? (LEASING_ANUAL * frac) / 1_000_000 : 0;
           
           // EBITDA = Receita líquida - Royalties - COGS - SG&A
           var ebitdaMi = revenueMi - royaltiesMi - cogsMi - sgaMi;
@@ -2308,7 +2417,11 @@
 
           var tr = document.createElement('tr');
           function td(v){ var x=document.createElement('td'); x.textContent=v; return x; }
-          var prodMediaDiaria = yearData.dailyM3; // m³/dia
+          // Calcular produção média diária real baseada no volume realmente produzido
+          var daysInYear = getDaysInYear(year);
+          var prodMediaDiaria = (frac > 0 && yearData.produced > 0) 
+            ? yearData.produced / (daysInYear * frac) // m³/dia (produção real média)
+            : yearData.dailyM3; // Fallback para volume teórico se não houver produção
           tr.appendChild(td(year));
           tr.appendChild(td(frac.toFixed(3)));
           tr.appendChild(td(nf2(reservesRemainingMiM3)));
@@ -2424,6 +2537,7 @@
         .forEach(function(id){ var el=document.getElementById(id); el.addEventListener('input', recalcC1); el.addEventListener('change', recalcC1); });
 
       document.getElementById('c1_decay_on').addEventListener('change', recalcC1);
+      document.getElementById('c1_leasing_on').addEventListener('change', recalcC1);
 
       document.getElementById('resetBtn').addEventListener('click', function(){
         // Defaults C1
@@ -2441,6 +2555,7 @@
         document.getElementById('c1_ke').value=25;
         document.getElementById('c1_decay_on').checked=false;
         document.getElementById('c1_decay').value=5;
+        document.getElementById('c1_leasing_on').checked=true;
         recalcC1();
       });
 
@@ -2770,21 +2885,49 @@
         var qdc = getQDCVolume(year);
         var qdca = getQDCAVolume(year);
         
-        // Encontrar o volume total deste ano nos dados
+        // Encontrar o volume total deste ano nos dados (usar produção média real)
         var totalVolume = 0;
         if(yearsData && yearsData.length > 0){
           for(var i = 0; i < yearsData.length; i++){
             if(yearsData[i].year === year){
-              totalVolume = yearsData[i].dailyM3 || 0;
+              // Usar avgDailyM3 (produção média real) se disponível, senão usar dailyM3
+              totalVolume = yearsData[i].avgDailyM3 || yearsData[i].dailyM3 || 0;
               break;
             }
           }
         }
         
-        var surplus = Math.max(0, totalVolume - qdc - qdca);
+        // Aplicar lógica de redução: se produção real < QDC + QDCA, reduzir primeiro QDCA, depois QDC
+        var qdcaReal = qdca;
+        var qdcReal = qdc;
+        var surplus = 0;
         
-        qdcData.push(qdc);
-        qdcaData.push(qdca);
+        if(totalVolume > 0){
+          if(totalVolume >= qdc + qdca){
+            // Produção suficiente: mostrar tudo normalmente
+            surplus = totalVolume - qdc - qdca;
+          } else {
+            // Produção insuficiente: reduzir primeiro QDCA, depois QDC
+            if(totalVolume <= qdca){
+              // Produção menor ou igual ao QDCA: zerar QDCA e não mostrar QDC
+              qdcaReal = totalVolume;
+              qdcReal = 0;
+            } else {
+              // Produção maior que QDCA mas menor que QDC + QDCA
+              qdcaReal = qdca; // QDCA completo
+              qdcReal = totalVolume - qdca; // Resto vai para QDC
+            }
+            surplus = 0; // Sem surplus quando há redução
+          }
+        } else {
+          // Sem produção: zerar tudo
+          qdcaReal = 0;
+          qdcReal = 0;
+          surplus = 0;
+        }
+        
+        qdcData.push(qdcReal);
+        qdcaData.push(qdcaReal);
         surplusData.push(surplus);
       }
       
