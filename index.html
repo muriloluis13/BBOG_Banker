@@ -736,6 +736,7 @@
       .kpi[data-kpi-order="6"] { order: 6; } /* Margem EBITDA - Linha 3 */
       .kpi[data-kpi-order="7"] { order: 7; } /* TIR - Linha 4 */
       .kpi[data-kpi-order="8"] { order: 8; } /* EV/EBITDA implícito - Linha 4 */
+      .kpi[data-kpi-order="9"] { order: 9; } /* EV/1P implícito - Linha 5 */
       /* TIR e EV/EBITDA implícito ficam lado a lado na linha 4 */
       /* Garantir que todos os cards tenham a mesma altura usando grid */
       .kpi {
@@ -1297,6 +1298,11 @@
               <div class="cap">EV/EBITDA implícito</div>
               <div class="val"><span id="c1_ev_ebitda">—</span></div>
               <div class="sub" style="font-size: 11px; color: var(--muted); margin-top:4px;">NPV / PV EBITDA 2028</div>
+            </div>
+            <div class="kpi kpi-lor-celeste" data-kpi-order="9">
+              <div class="cap">EV/1P implícito (US$/bbl)</div>
+              <div class="val">US$ <span id="c1_ev_1p">—</span> / bbl</div>
+              <div class="sub" style="font-size: 11px; color: var(--muted); margin-top:4px;">(NPV / 5,50) / (Reservas consumidas / 170)</div>
             </div>
           </div>
         </section>
@@ -2485,6 +2491,20 @@
         document.getElementById('c1_ev_ebitda').textContent = evEbitdaImpl;
 
         var reservasConsumidasMiM3 = producedTotalM3/1_000_000;
+
+        // EV/1P implícito (US$/bbl) = (NPV em US$) / (Reservas consumidas em bbl)
+        // NPV está em R$ milhões (npvMi). Convertemos para US$ milhões dividindo por USD_BRL (=5,50).
+        // Reservas consumidas estão em milhões de m³. Converter para milhões de bbl dividindo por 170.
+        var ev1pTxt = '—';
+        var denomMiBbl = reservasConsumidasMiM3 / 170;
+        if(isFinite(npvMi) && isFinite(denomMiBbl) && denomMiBbl > 0){
+          var npvUsdMi = npvMi / USD_BRL;
+          var evUsdPerBbl = npvUsdMi / denomMiBbl;
+          ev1pTxt = nf2(evUsdPerBbl);
+        }
+        var ev1pEl = document.getElementById('c1_ev_1p');
+        if(ev1pEl) ev1pEl.textContent = ev1pTxt;
+
         var totalDays = 0;
         for(var j=0; j<years.length; j++){
           var yearDays = getDaysInYear(years[j].year);
